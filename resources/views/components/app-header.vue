@@ -11,20 +11,20 @@ const nav_links = computed<Link[]>(() => [
 </script>
 
 <template>
-    <header class="bg-light fixed-top">
+    <header class="bg-light">
         <div class="container">
             <div class="row flex-wrap justify-content-center py-1">
-                <div class="col-md-6 row">
-                    <InertiaLink :href="route('home')" class="col-sm-2 text-decoration-none link-warning fs-4 text-uppercase my-auto">
+                <div class="col-sm-6 row justify-content-sm-start justify-content-center">
+                    <InertiaLink :href="route('home')" class="col-sm-2 text-decoration-none text-center link-warning fs-4 text-uppercase my-auto">
                         Lingo
                     </InertiaLink>
-                    <nav class="offset-sm-1 col-sm-9 nav nav-pills">
+                    <nav class="offset-sm-1 col-sm-9 nav nav-pills d-flex justify-content-sm-start justify-content-center">
                         <li v-for="link in nav_links" :key="link.name" class="nav-item">
                             <InertiaLink :href="link.href" class="nav-link link-secondary">{{ link.name }}</InertiaLink>
                         </li>
                     </nav>
                 </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-end">
+                <div class="col-sm-6 d-flex align-items-center justify-content-sm-end justify-content-center">
                     <InertiaLink :href="route('lesson.create')" class="btn btn-dark">
                         + Import Lesson
                     </InertiaLink>

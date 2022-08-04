@@ -5,6 +5,9 @@ import AppHeader from '@/views/components/app-header.vue';
 <template>
 	<div>
 		<AppHeader/>
-		<slot />
+
+		<main class="container mt-4">
+			<slot />
+		</main>
 	</div>
 </template>

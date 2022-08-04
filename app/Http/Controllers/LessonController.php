@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLessonRequest;
+use App\Models\Lesson;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -9,5 +11,16 @@ class LessonController extends Controller
     public function create()
     {
         return inertia('lesson.create');
+    }
+
+    public function store(StoreLessonRequest $req)
+    {
+        $lesson = Lesson::create($req->all());
+        return inertia('lesson.show', compact('lesson'));
+    }
+
+    public function show(Lesson $lesson)
+    {
+        return inertia('lesson.show', compact('lesson'));
     }
 }
