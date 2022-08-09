@@ -1,11 +1,25 @@
 import { createStore } from 'vuex';
+import { WordAndLanguage } from '../types';
 
 const store = createStore({
     state: {
-        lessons: [],
+        user: {
+            data: {
+                words: [
+                    { id: 1, language: 'portuguese', word: 'oi', level: 1, meanings: [ 'hello', 'hi' ] },
+                ],
+            },
+            token: null,
+        },
     },
     getters: {},
-    actions: {},
+    actions: {
+
+        checkWord({ commit }, { word, language }: WordAndLanguage) {
+            
+        },
+
+    },
     mutations: {},
     modules: {}
 });

@@ -1,0 +1,72 @@
+:root
+{
+    --gold-color: 255, 215, 0;
+}
+
+.word-trash,
+.word-0,
+.word-1,
+.word-2,
+.word-3,
+.word-4,
+.word-5
+{
+    border-radius: 5px;
+    padding: 0 3px;
+    cursor: pointer;
+}
+
+.word-0
+{
+    background-color: rgba(31, 143, 255, .6);
+}
+
+.word-1
+{
+    background-color: rgba(var(--gold-color), 1);
+}
+
+.word-2
+{
+    background-color: rgba(var(--gold-color), .75);
+}
+
+.word-3
+{
+    background-color: rgba(var(--gold-color), .5);
+}
+
+.word-4
+{
+    background-color: rgba(var(--gold-color), .25);
+}
+
+.lesson-card
+{
+    min-height: 75vh;
+}
+
+.popup-outer
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-outer
+    .popup-inner
+{
+    min-width: 300px;
+    background: white;
+    /* padding: 32px; */
+    border-radius: 16px;
+    
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}

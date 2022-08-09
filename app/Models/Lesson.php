@@ -11,6 +11,14 @@ class Lesson extends Model
 
     protected $fillable = [
         'title',
-        'body'
+        'body',
+        'language',
+    ];
+
+    public static $availableLanguagesAbbrev = [
+        'pt',
+        'en',
+        'es',
+        'la',
     ];
 }

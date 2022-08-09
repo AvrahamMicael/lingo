@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::inertia('/', 'home')->name('home');
-Route::inertia('/test', 'home')->name('test');
 
 Route::resource('lesson', LessonController::class);
+
+Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Lesson;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 
 class StoreLessonRequest extends FormRequest
 {
@@ -23,9 +25,11 @@ class StoreLessonRequest extends FormRequest
      */
     public function rules()
     {
+        $availableLanguagesAbbrev = Arr::join(Lesson::$availableLanguagesAbbrev, ',');
         return [
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:12000',
+            'language' => "required|string|in:$availableLanguagesAbbrev",
         ];
     }
 }
