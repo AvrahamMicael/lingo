@@ -20,3 +20,4 @@ Route::inertia('/', 'home')->name('home');
 Route::resource('lesson', LessonController::class);
 
 Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');
+Route::resource('word', WordController::class);

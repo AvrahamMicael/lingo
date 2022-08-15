@@ -14,11 +14,4 @@ class Lesson extends Model
         'body',
         'language',
     ];
-
-    public static $availableLanguagesAbbrev = [
-        'pt',
-        'en',
-        'es',
-        'la',
-    ];
 }

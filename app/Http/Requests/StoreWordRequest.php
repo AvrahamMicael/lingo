@@ -6,7 +6,7 @@ use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 
-class StoreLessonRequest extends FormRequest
+class StoreWordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,12 @@ class StoreLessonRequest extends FormRequest
     {
         $availableLanguagesAbbrev = Arr::join(Language::$availableAbbrev, ',');
         return [
-            'title' => 'required|string|max:255',
-            'body' => 'required|string|max:12000',
-            'language' => "required|string|in:$availableLanguagesAbbrev",
+            'word' => 'required|string',
+            'meaning' => 'required|array|size:2',
+            'meaning.value' => 'required|string',
+            'meaning.isGoogleTranslate' => 'required|boolean',
+            'from_language' => "required|string|in:$availableLanguagesAbbrev",
+            'to_language' => "required|string|in:$availableLanguagesAbbrev",
         ];
     }
 }

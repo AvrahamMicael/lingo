@@ -8,6 +8,8 @@ import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
 import axiosClient from '@/scripts/axios';
 import useRoute from '@/scripts/composables/useRoute';
+import store from '@/scripts/store';
+import { Meaning } from '../../../scripts/types/index';
 // import store from '@/scripts/store';
 
 const route = useRoute();
@@ -34,24 +36,27 @@ const clickedWordSpans = computed<HTMLSpanElement[]>(() =>
         .filter(span => span.innerText == clickedWord.value)
 );
 
-const changeWordLevel = (level: number | string):void => {
+const changeWordLevel = (level: number):void => {
     clickedWordSpans.value.forEach(span => span.className = `word-${level}`);
 };
 
-const checkedWordMeanings = ref<string[]>([]);
+const checkedWordMeanings = ref<Meaning[]>([]);
 
 const checkWord = (word: string): void => {
     clickedWord.value = word;
 
-    axiosClient.get<{ meanings: string[] }>(route('word.meanings', {
+    store.dispatch('checkWord', {
+        word,
         from_language: props.lesson.language,
         to_language: 'en',
-        word,
-    }))
-        .then(( { data } ) => checkedWordMeanings.value = checkedWordMeanings.value.concat(data.meanings))
-        .catch(() => checkedWordMeanings.value.push('<span class="text-danger">Something went Wrong!</span>'));
-
-    // store.dispatch('checkWord', { word, language: props.lesson.language });
+    })
+        .then(( { data } ) => {
+            //check if is still the same word
+            if(clickedWord.value == word)
+            {
+                checkedWordMeanings.value = checkedWordMeanings.value.concat(data.meanings)
+            }
+        });
 };
 
 const toggleWordPopup = (): void => {
@@ -60,9 +65,13 @@ const toggleWordPopup = (): void => {
 };
 
 const selectAddMeaning = (meaningIndex: number): void => {
-    // ...
-    const meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0) as string;
-    // store.dispatch('selectAddMeaning', { word, meaning });
+    const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
+    store.dispatch('selectAddMeaning', {
+        meaning,
+        word: clickedWord.value,
+        from_language: props.lesson.language,
+        to_language: 'en',
+    });
 };
 
 onMounted(() => {
@@ -92,12 +101,12 @@ onMounted(() => {
 
                 <div
                     v-for="(meaning, i) in checkedWordMeanings"
-                    :key="meaning"
+                    :key="meaning.value"
                     type="button"
                     @click="selectAddMeaning(i)"
                     class="my-2"
                 >
-                    {{ meaning }}
+                    {{ meaning.value }}
                 </div>
 
                 <label class="d-block">
