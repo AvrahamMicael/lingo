@@ -6,13 +6,11 @@ import v from 'voca';
 import RenderLessonBody from '@/views/components/render-lesson-body.vue';
 import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
-import axiosClient from '@/scripts/axios';
-import useRoute from '@/scripts/composables/useRoute';
-import store from '@/scripts/store';
+import { useStore } from '../../../scripts/store/index';
 import { Meaning } from '../../../scripts/types/index';
-// import store from '@/scripts/store';
+import { ActionType } from '@/scripts/store/actions';
 
-const route = useRoute();
+const store = useStore();
 
 const props = defineProps<{ lesson: Lesson }>();
 
@@ -45,7 +43,7 @@ const checkedWordMeanings = ref<Meaning[]>([]);
 const checkWord = (word: string): void => {
     clickedWord.value = word;
 
-    store.dispatch('checkWord', {
+    store.dispatch(ActionType.CheckWord, {
         word,
         from_language: props.lesson.language,
         to_language: 'en',
@@ -66,7 +64,7 @@ const toggleWordPopup = (): void => {
 
 const selectAddMeaning = (meaningIndex: number): void => {
     const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
-    store.dispatch('selectAddMeaning', {
+    store.dispatch(ActionType.SelectAddMeaning, {
         meaning,
         word: clickedWord.value,
         from_language: props.lesson.language,
