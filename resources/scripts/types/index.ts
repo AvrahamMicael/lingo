@@ -37,6 +37,7 @@ export interface OptionValueAndName {
 export interface Meaning {
     value: string,
     isGoogleTranslate: boolean,
+    id_word?: number,
 };
 
 export interface WordWithMeaning {
@@ -56,4 +57,39 @@ export interface CreatedWord {
 export interface CreatedWordWithMeaning {
     createdWord: CreatedWord,
     meaning: Meaning
+};
+
+export type LoginForm = {
+    email: string,
+    password: string,
+};
+
+export type RegisterForm = LoginForm & {
+    name: string,
+    password_confirmation: string,
+};
+
+export type WordInfo = {
+    id: number,
+    id_user?: number,
+    from_language?: LanguageAbbrev,
+    word: string,
+    level: number,
+    meanings: Meaning[],
+};
+
+export type UserLanguageInfo = {
+    words: WordInfo[],
+};
+
+export type UserLanguages = {
+    pt?: UserLanguageInfo,
+    en?: UserLanguageInfo,
+    la?: UserLanguageInfo,
+    es?: UserLanguageInfo,
+};
+
+export type UserData = {
+    name: string,
+    languages: UserLanguages,
 };

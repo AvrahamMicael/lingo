@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWordRequest;
 use App\Models\Language;
+use App\Models\Word;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class WordController extends Controller
@@ -24,16 +25,22 @@ class WordController extends Controller
 
     public function store(StoreWordRequest $req)
     {
-        // add to user's words ...
+        $createdWord = auth()->user()->words()->create($req->all());
+
+        $createdWord->meanings()->create([
+            'value' => $req->meaning['value'],
+            'isGoogleTranslate' => $req->meaning['isGoogleTranslate'],
+            'to_language' => $req->to_language,
+        ]);
 
         $createdWord = [
-            'id' => 2,
-            'id_user' => 523,
+            'id' => $createdWord->id,
+            'id_user' => auth()->id(),
             'to_language' => $req->to_language,
             'from_language' => $req->from_language,
             'word' => $req->word,
             'level' => 1,
-        ]; // example
+        ];
 
         return response($createdWord, 201);
     }

@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import { useStore } from '@/scripts/store';
 import AppHeader from '@/views/components/app-header.vue';
+import { onBeforeMount } from 'vue';
+import { ActionType } from '@/scripts/store/actions';
+
+const store = useStore();
+
+onBeforeMount(() => {
+	store.dispatch(ActionType.SetUser);
+});
 </script>
 
 <template>

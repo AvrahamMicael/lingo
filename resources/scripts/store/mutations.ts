@@ -1,24 +1,29 @@
-import { CreatedWordWithMeaning } from '../types';
+import { CreatedWordWithMeaning, LanguageAbbrev, UserData } from '../types';
 import { State } from './state';
 import { MutationTree } from 'vuex';
+import { WordInfo } from '../types/index';
 
 export enum MutationType {
     AddWordMeaning = 'addWordMeaning',
+    SetUser = 'setUser',
+    CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
 };
 
 export type Mutations = {
     [MutationType.AddWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
+    [MutationType.SetUser](state: State, userData: UserData): void,
+    [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
 };
 
 export const mutations: MutationTree<State> & Mutations = {
 
     [MutationType.AddWordMeaning]({ user }, { createdWord, meaning }) {
 
-        const userWords = Object.entries(user.data.languages)
+        const userLanguageWords: WordInfo[] = Object.entries(user.data.languages)
             .find(entries => entries[0] == createdWord.from_language)![1]
             .words;
 
-        const selectedWord = userWords
+        const selectedWord: WordInfo | undefined = userLanguageWords
             .find(userWordInfo => userWordInfo.word == createdWord.word);
 
         if(selectedWord)
@@ -28,12 +33,23 @@ export const mutations: MutationTree<State> & Mutations = {
         else
         {
             const { id, word, level } = createdWord;
-            userWords.unshift({
+            userLanguageWords.unshift({
                 id,
                 word,
                 level,
                 meanings: [meaning],
             });
+        }
+    },
+
+    [MutationType.SetUser]({ user }, userData) {
+        user.data = userData;
+    },
+
+    [MutationType.CreateUserLangIfDoesntExist]({ user }, language) {
+        if(!user.data.languages[language])
+        {
+            user.data.languages[language] = { words: [] };
         }
     },
 

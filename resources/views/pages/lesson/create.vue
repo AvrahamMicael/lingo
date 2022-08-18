@@ -8,6 +8,7 @@ import FormError from '@/views/components/form-error.vue';
 import useRoute from '@/scripts/composables/useRoute';
 import { computed } from '@vue/reactivity';
 import LabelSelect from '@/views/components/label-select.vue';
+import SubmitBlockButton from '@/views/components/submit-block-button.vue';
 
 const availableLanguages = computed<OptionValueAndName[]>(() => [
 	{ name: 'portuguese', value: 'pt' },
@@ -42,11 +43,7 @@ const handleSubmit = (): void => {
 			<CardBox>
 				<LabelSelect label="Language:" v-model:current="lessonForm.language" :options="availableLanguages"/>
 				<FormError :error="lessonForm.errors.language" class="mb-2"/>
-				<div class="d-grid gap-2">
-					<button :disabled="lessonForm.processing" type="submit" class="btn btn-success">
-						Submit
-					</button>
-				</div>
+				<SubmitBlockButton name="Submit" :disabled="lessonForm.processing"/>
 			</CardBox>
 		</div>
 	</form>

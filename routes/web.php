@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::inertia('/', 'home')->name('home');
+Route::group([
+    'middleware' => 'auth'
+], function() {
+    
+    Route::inertia('/', 'home')->name('home');
 
-Route::resource('lesson', LessonController::class);
+    Route::get('/user', [UserController::class, 'data'])->name('user');
+    
+    Route::resource('lesson', LessonController::class);
+    
+    Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');
+    Route::resource('word', WordController::class);
 
-Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');
-Route::resource('word', WordController::class);
+});
+
+require __DIR__.'/auth.php';

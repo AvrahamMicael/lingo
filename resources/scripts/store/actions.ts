@@ -1,15 +1,15 @@
 import { ActionContext, ActionTree } from "vuex";
-import { StoreWordPayload, TranslatePayload } from "../types";
+import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord } from "../types";
 import { Mutations, MutationType } from "./mutations";
 import { State } from "./state";
 import { AxiosResponse } from 'axios';
-import { Meaning, CreatedWord } from '../types/index';
 import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
 
 export enum ActionType {
     CheckWord = 'checkWord',
-    SelectAddMeaning = 'SelectAddMeaning',
+    SelectAddMeaning = 'selectAddMeaning',
+    SetUser = 'setUser',
 };
 
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
@@ -22,6 +22,7 @@ type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
 export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
+    [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
 };
 
 const route = useRoute();
@@ -33,15 +34,26 @@ export const actions: ActionTree<State, State> & Actions = {
     },
 
     async [ActionType.SelectAddMeaning]({ commit }, storeWordPayload) {
-        const promise = axiosClient.post<CreatedWord>(route('word.store'), storeWordPayload)
+        return await axiosClient.post<CreatedWord>(route('word.store'), storeWordPayload)
             .then(res => {
                 const createdWord = res.data;
                 const { meaning } = storeWordPayload;
+                commit(MutationType.CreateUserLangIfDoesntExist, createdWord.from_language);
                 commit(MutationType.AddWordMeaning, { createdWord, meaning });
                 return res;
             });
-            
-        return await promise;
+    },
+
+    async [ActionType.SetUser]({ commit }) {
+        return await axiosClient.get<UserData>(route('user'))
+            .then(res => {
+                commit(MutationType.SetUser, res.data);
+                return res;
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
     },
 
 };
