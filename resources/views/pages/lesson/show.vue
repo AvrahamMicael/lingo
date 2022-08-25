@@ -7,10 +7,11 @@ import RenderLessonBody from '@/views/components/render-lesson-body.vue';
 import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
 import { watchEffect } from 'vue';
-import { useStore } from '../../../scripts/store/index';
-import { Meaning } from '../../../scripts/types/index';
+import { useStore } from '@/scripts/store/index';
+import { Meaning } from '@/scripts/types/index';
 import { ActionType } from '@/scripts/store/actions';
 import { MutationType } from '@/scripts/store/mutations';
+import Spinner from '../../components/spinner.vue';
 
 const { getters, commit, dispatch } = useStore();
 
@@ -97,13 +98,13 @@ watchEffect(() => {
 </script>
 
 <template layout>
-    <CardBox :header="lesson.title" body-class="lesson-card">
+    <CardBox :header="lesson.title" class="lesson-card" body-class="d-flex flex-column">
         <RenderLessonBody
             v-if="is_lesson_body_modified_ready"
             @checkWord="checkWord"
             :lesson_body="lesson_body_modified"
         />
-        <div v-else>loader</div>
+        <Spinner v-else/>
 
         <WordPopup :word="checkedWord">
             <CardBox>

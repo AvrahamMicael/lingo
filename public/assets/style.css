@@ -3,6 +3,12 @@
     --gold-color: 255, 215, 0;
 }
 
+html,
+body
+{
+    height: 100%;
+}
+
 .word--1,
 .word-0,
 .word-1,
@@ -43,7 +49,7 @@
 
 .lesson-card
 {
-    min-height: 75vh;
+    max-height: 90vh;
 }
 
 .popup-outer
