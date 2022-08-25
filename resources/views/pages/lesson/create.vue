@@ -33,9 +33,9 @@ const handleSubmit = (): void => {
 <template layout>
 	<form @submit.prevent="handleSubmit" class="row justify-content-center justify-content-md-between">
 		<CardBox class="col-md-8 mb-4">
-			<LabelInput label="Title:" v-model="lessonForm.title" required/>
+			<LabelInput label="Title:" v-model="lessonForm.title" required no-spell-check/>
 			<FormError :error="lessonForm.errors.title"/>
-			<LabelTextarea label="Content:" v-model="lessonForm.body" required/>
+			<LabelTextarea label="Content:" v-model="lessonForm.body" required no-spell-check/>
 			<FormError :error="lessonForm.errors.body"/>
 		</CardBox>
 

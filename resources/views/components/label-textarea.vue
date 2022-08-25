@@ -12,6 +12,7 @@ defineProps({
         type: String,
         default: 'Text',
     },
+    noSpellCheck: Boolean,
     required: Boolean,
 });
 </script>
@@ -24,6 +25,7 @@ defineProps({
             cols="30"
             rows="10"
             class="form-control"
+            :spellcheck="!noSpellCheck"
             required
         ></textarea>
     </label>

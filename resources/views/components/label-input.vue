@@ -12,6 +12,7 @@ defineProps({
         type: String,
         default: 'Text',
     },
+    noSpellCheck: Boolean,
     required: Boolean,
 });
 </script>
@@ -22,8 +23,9 @@ defineProps({
         <input
             @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
             :type="type"
-            required
             class="form-control"
+            :spellcheck="!noSpellCheck"
+            required
         >
     </label>
 </template>
