@@ -4,10 +4,10 @@ import AppHeader from '@/views/components/app-header.vue';
 import { onBeforeMount } from 'vue';
 import { ActionType } from '@/scripts/store/actions';
 
-const store = useStore();
+const { dispatch } = useStore();
 
 onBeforeMount(() => {
-	store.dispatch(ActionType.SetUser);
+	dispatch(ActionType.SetUser);
 });
 </script>
 

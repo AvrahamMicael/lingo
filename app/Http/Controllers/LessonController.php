@@ -16,7 +16,7 @@ class LessonController extends Controller
     public function store(StoreLessonRequest $req)
     {
         $lesson = Lesson::create($req->all());
-        return inertia('lesson.show', compact('lesson'));
+        return redirect()->route('lesson.show', $lesson->id);
     }
 
     public function show(Lesson $lesson)

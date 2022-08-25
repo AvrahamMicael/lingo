@@ -7,12 +7,14 @@ export enum MutationType {
     AddWordMeaning = 'addWordMeaning',
     SetUser = 'setUser',
     CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
+    SetUserLoaded = 'setUserLoaded',
 };
 
 export type Mutations = {
     [MutationType.AddWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
     [MutationType.SetUser](state: State, userData: UserData): void,
     [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
+    [MutationType.SetUserLoaded](state: State): void,
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -51,6 +53,11 @@ export const mutations: MutationTree<State> & Mutations = {
         {
             user.data.languages[language] = { words: [] };
         }
+    },
+
+
+    [MutationType.SetUserLoaded]({ user }) {
+        user.loaded = true;
     },
 
 };

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->string('from_language');
             $table->string('word');
-            $table->tinyInteger('level')->unsigned()->default(1);
+            $table->tinyInteger('level')->default(1);
         });
     }
 

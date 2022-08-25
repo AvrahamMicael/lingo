@@ -1,56 +1,72 @@
 <script setup lang="ts">
-import { Lesson } from '@/scripts/types/index.js';
+import { Lesson, WordInfo } from '@/scripts/types/index.js';
 import CardBox from '@/views/components/card-box.vue';
-import { onMounted, ref } from '@vue/runtime-core';
+import { ref } from '@vue/runtime-core';
 import v from 'voca';
 import RenderLessonBody from '@/views/components/render-lesson-body.vue';
 import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
+import { watchEffect } from 'vue';
 import { useStore } from '../../../scripts/store/index';
 import { Meaning } from '../../../scripts/types/index';
 import { ActionType } from '@/scripts/store/actions';
+import { MutationType } from '@/scripts/store/mutations';
 
-const store = useStore();
+const { getters, commit, dispatch } = useStore();
 
 const props = defineProps<{ lesson: Lesson }>();
 
+const lessonLanguageUserWords = computed<WordInfo[]>(() => {
+    commit(MutationType.CreateUserLangIfDoesntExist, props.lesson.language);
+    return getters.userLanguages[props.lesson.language]!.words;
+});
+
 const lesson_body_modified = ref<string>(props.lesson.body);
+
+const is_lesson_body_modified_ready = ref<boolean>(false);
 
 const replaceWordsWithSpan = (): void => {
     const lesson_words = v.words(v.lowerCase(props.lesson.body));
     const unique_words = [...new Set(lesson_words)];
 
     unique_words.forEach((uniq_word: string): void => {
-        lesson_body_modified.value = v.replace(lesson_body_modified.value, new RegExp(`\\b${uniq_word}\\b`, 'gi'), `<span @click="checkWord" class="word-0">${uniq_word}</span>`);
+        const wordLevel: number = lessonLanguageUserWords.value.find((wordInfo: WordInfo) => wordInfo.word == uniq_word)?.level
+            ?? 0;
+        lesson_body_modified.value = v.replace(
+            lesson_body_modified.value,
+            new RegExp(`\\b${uniq_word}\\b`, 'gi'),
+            `<span @click="checkWord" class="word-${wordLevel}">${uniq_word}</span>`
+        );
     });
+    is_lesson_body_modified_ready.value = true;
 };
 
-const clickedWord = ref<string>('');
+const checkedWord = ref<string>('');
 
-const clickedWordSpans = computed<HTMLSpanElement[]>(() =>
-    clickedWord.value == ''
+const checkedWordSpans = computed<HTMLSpanElement[]>(() =>
+    checkedWord.value == ''
     ? []
     : (Array.from(document.querySelectorAll('p.lesson-body span')) as HTMLSpanElement[])
-        .filter(span => span.innerText == clickedWord.value)
+        .filter(span => span.innerText == checkedWord.value)
 );
 
 const changeWordLevel = (level: number):void => {
-    clickedWordSpans.value.forEach(span => span.className = `word-${level}`);
+    checkedWordSpans.value.forEach(span => span.className = `word-${level}`);
 };
 
 const checkedWordMeanings = ref<Meaning[]>([]);
 
 const checkWord = (word: string): void => {
-    clickedWord.value = word;
+    checkedWord.value = word;
 
-    store.dispatch(ActionType.CheckWord, {
+    dispatch(ActionType.CheckWord, {
         word,
         from_language: props.lesson.language,
         to_language: 'en',
     })
         .then(( { data } ) => {
             //check if is still the same word
-            if(clickedWord.value == word)
+            if(checkedWord.value == word)
             {
                 checkedWordMeanings.value = checkedWordMeanings.value.concat(data.meanings)
             }
@@ -58,39 +74,48 @@ const checkWord = (word: string): void => {
 };
 
 const toggleWordPopup = (): void => {
-    clickedWord.value = '';
+    checkedWord.value = '';
     checkedWordMeanings.value = [];
 };
 
 const selectAddMeaning = (meaningIndex: number): void => {
     const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
-    store.dispatch(ActionType.SelectAddMeaning, {
+    dispatch(ActionType.SelectAddMeaning, {
         meaning,
-        word: clickedWord.value,
+        word: checkedWord.value,
         from_language: props.lesson.language,
         to_language: 'en',
-    });
+    })
+        .then(( { data } ) => {
+            if(data.word == checkedWord.value) changeWordLevel(data.level);
+        });
 };
 
-onMounted(() => {
-    replaceWordsWithSpan();
+watchEffect(() => {
+    if(getters.isUserLoaded) replaceWordsWithSpan();
 });
 </script>
 
 <template layout>
     <CardBox :header="lesson.title" body-class="lesson-card">
-        <RenderLessonBody @checkWord="checkWord" :lesson_body="lesson_body_modified"/>
+        <RenderLessonBody
+            v-if="is_lesson_body_modified_ready"
+            @checkWord="checkWord"
+            :lesson_body="lesson_body_modified"
+        />
+        <div v-else>loader</div>
 
-        <WordPopup :word="clickedWord">
+        <WordPopup :word="checkedWord">
             <CardBox>
                 <button @click="toggleWordPopup" class="btn btn-sm btn-outline-secondary float-end d-flex align-items-center">
                     <img src="/assets/img/x.svg" alt="close">
                 </button>
 
-                <h5>{{ clickedWord }}</h5>
+                <h5>{{ checkedWord }}</h5>
                 <hr>
 
                 <textarea rows="1" placeholder="Type a new meaning here" class="form-control mb-2"></textarea>
+                
 
                 <!-- <div>Saved Meanings</div>
                 <div>meaning 1</div> -->

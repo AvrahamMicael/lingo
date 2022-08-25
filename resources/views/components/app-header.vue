@@ -2,15 +2,14 @@
 import useRoute from '@/scripts/composables/useRoute';
 import { useStore } from '@/scripts/store';
 import { Link } from '@/scripts/types';
-import { computed } from '@vue/reactivity';
 
 const route = useRoute();
 
-const { state } = useStore();
+const { getters } = useStore();
 
-const nav_links = computed<Link[]>(() => [
+const nav_links: Link[] = [
     { name: 'Home', href: route('home') },
-]);
+];
 </script>
 
 <template>
@@ -34,7 +33,7 @@ const nav_links = computed<Link[]>(() => [
 
                     <div class="dropdown open mx-2">
                         <a class="text-decoration-none link-secondary dropdown-toggle" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ state.user.data.name }}
+                            {{ getters.userName }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="triggerId">
                             <InertiaLink :href="route('logout')" class="dropdown-item">Log out</InertiaLink>

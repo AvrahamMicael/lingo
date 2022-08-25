@@ -2,7 +2,8 @@ import { UserData } from "../types";
 
 export type State = {
     user: {
-        data: UserData
+        data: UserData,
+        loaded: boolean,
     },
 };
 
@@ -12,5 +13,6 @@ export const state: State = {
             name: '',
             languages: {},
         },
+        loaded: false,
     },
 };

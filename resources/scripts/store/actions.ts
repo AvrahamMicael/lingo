@@ -15,7 +15,7 @@ export enum ActionType {
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
     commit<K extends keyof Mutations>(
         key: K,
-        payload: Parameters<Mutations[K]>[1]
+        payload?: Parameters<Mutations[K]>[1]
     ): ReturnType<Mutations[K]>
 };
 
@@ -48,6 +48,7 @@ export const actions: ActionTree<State, State> & Actions = {
         return await axiosClient.get<UserData>(route('user'))
             .then(res => {
                 commit(MutationType.SetUser, res.data);
+                commit(MutationType.SetUserLoaded);
                 return res;
             })
             .catch(error => {
