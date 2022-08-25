@@ -6,7 +6,7 @@ import v from 'voca';
 import RenderLessonBody from '@/views/components/render-lesson-body.vue';
 import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
-import { watchEffect } from 'vue';
+import { watch, onBeforeMount } from 'vue';
 import { useStore } from '@/scripts/store/index';
 import { Meaning } from '@/scripts/types/index';
 import { ActionType } from '@/scripts/store/actions';
@@ -21,9 +21,7 @@ const lessonLanguageUserWords = computed<WordInfo[]>(() => {
     commit(MutationType.CreateUserLangIfDoesntExist, props.lesson.language);
     return getters.userLanguages[props.lesson.language]!.words;
 });
-
 const lesson_body_modified = ref<string>(props.lesson.body);
-
 const is_lesson_body_modified_ready = ref<boolean>(false);
 
 const replaceWordsWithSpan = (): void => {
@@ -42,20 +40,26 @@ const replaceWordsWithSpan = (): void => {
     is_lesson_body_modified_ready.value = true;
 };
 
-const checkedWord = ref<string>('');
 
-const checkedWordSpans = computed<HTMLSpanElement[]>(() =>
-    checkedWord.value == ''
-    ? []
-    : (Array.from(document.querySelectorAll('p.lesson-body span')) as HTMLSpanElement[])
-        .filter(span => span.innerText == checkedWord.value)
+const checkedWord = ref<string>('');
+const checkedWordMeanings = ref<Meaning[]>([]);
+
+
+const lessonWordsSpans = computed<HTMLSpanElement[]>(() => 
+    Array.from(document.querySelectorAll('div.card-body p.lesson-body span')) as HTMLSpanElement[]
 );
 
-const changeWordLevel = (level: number):void => {
-    checkedWordSpans.value.forEach(span => span.className = `word-${level}`);
+const wordSpans = (word: string): HTMLSpanElement[] => 
+    lessonWordsSpans.value
+        .filter(span => span.innerText == word);
+
+const changeWordLevel = (word: string, level: number): void => {
+    wordSpans(word)
+        .forEach(span => {
+            span.className = `word-${level}`;
+        });
 };
 
-const checkedWordMeanings = ref<Meaning[]>([]);
 
 const checkWord = (word: string): void => {
     checkedWord.value = word;
@@ -74,10 +78,13 @@ const checkWord = (word: string): void => {
         });
 };
 
+
 const toggleWordPopup = (): void => {
     checkedWord.value = '';
     checkedWordMeanings.value = [];
 };
+
+
 
 const selectAddMeaning = (meaningIndex: number): void => {
     const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
@@ -88,13 +95,20 @@ const selectAddMeaning = (meaningIndex: number): void => {
         to_language: 'en',
     })
         .then(( { data } ) => {
-            if(data.word == checkedWord.value) changeWordLevel(data.level);
-        });
+            changeWordLevel(data.word, data.level);
+        })
+        .finally(toggleWordPopup);
 };
 
-watchEffect(() => {
+
+
+const replaceWordsWithSpanIfUserLoaded = (): void => {
     if(getters.isUserLoaded) replaceWordsWithSpan();
-});
+};
+
+watch(() => getters.isUserLoaded, replaceWordsWithSpanIfUserLoaded);
+
+onBeforeMount(replaceWordsWithSpanIfUserLoaded);
 </script>
 
 <template layout>
