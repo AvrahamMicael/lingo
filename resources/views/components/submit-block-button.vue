@@ -6,7 +6,7 @@ defineProps({
     },
     name: {
         type: String,
-        required: true,
+        default: 'Submit',
     },
     btnType: {
         type: String,

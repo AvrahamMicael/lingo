@@ -22,7 +22,7 @@ const handleSubmit = (): void => {
 };
 </script>
 
-<template layout="auth">
+<template layout="card">
     <form @submit.prevent="handleSubmit">
         <LabelInput label="Name:" v-model="registerForm.name" required/>
         <FormError :error="registerForm.errors.name"/>

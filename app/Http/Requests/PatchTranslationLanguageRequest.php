@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLessonRequest extends FormRequest
+class PatchTranslationLanguageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,9 @@ class StoreLessonRequest extends FormRequest
      */
     public function rules()
     {
-        $availableLanguagesAbbrev = Language::getAvailableAbbrevString();
+        $availableLangs = Language::getAvailableAbbrevString();
         return [
-            'title' => 'required|string|max:255',
-            'body' => 'required|string|max:12000',
-            'language' => "required|string|in:$availableLanguagesAbbrev",
+            'translation_language' => "required|string|size:2|in:$availableLangs",
         ];
     }
 }

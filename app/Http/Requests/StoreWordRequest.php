@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
 
 class StoreWordRequest extends FormRequest
 {
@@ -25,7 +24,7 @@ class StoreWordRequest extends FormRequest
      */
     public function rules()
     {
-        $availableLanguagesAbbrev = Arr::join(Language::$availableAbbrev, ',');
+        $availableLanguagesAbbrev = Language::getAvailableAbbrevString();
         return [
             'word' => 'required|string',
             'meaning' => 'required|array|size:2',

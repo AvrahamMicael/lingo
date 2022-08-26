@@ -81,3 +81,8 @@ body
 {
     width: 400px;
 }
+
+.min-w-430px
+{
+    min-width: 430px;
+}

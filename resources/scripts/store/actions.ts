@@ -45,7 +45,7 @@ export const actions: ActionTree<State, State> & Actions = {
     },
 
     async [ActionType.SetUser]({ commit }) {
-        return await axiosClient.get<UserData>(route('user'))
+        return await axiosClient.get<UserData>(route('user.data'))
             .then(res => {
                 commit(MutationType.SetUser, res.data);
                 commit(MutationType.SetUserLoaded);

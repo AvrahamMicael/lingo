@@ -19,16 +19,30 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' => 'auth'
 ], function() {
-    
-    Route::inertia('/', 'home')->name('home');
 
-    Route::get('/user', [UserController::class, 'data'])->name('user');
-    
-    Route::resource('lesson', LessonController::class);
-    
-    Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');
-    Route::resource('word', WordController::class);
+    Route::group([
+        'controller' => UserController::class,
+        'prefix' => 'user/language',
+    ], function() {
+        Route::middleware('without-translation-language')
+            ->get('', 'translationLanguage')->name('')->name('user.language');
 
+        Route::patch('', 'changeTranslationLanguage');
+    });
+
+
+    Route::group([
+        'middleware' => 'with-translation-language'
+    ], function() {
+        Route::inertia('/', 'home')->name('home');
+
+        Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
+        
+        Route::resource('lesson', LessonController::class);
+        
+        Route::get('/word/meanings/{from_language}/{to_language}/{word}', [WordController::class, 'meanings'])->name('word.meanings');
+        Route::resource('word', WordController::class);
+    });
 });
 
 require __DIR__.'/auth.php';
