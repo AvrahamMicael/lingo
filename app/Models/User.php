@@ -48,6 +48,7 @@ class User extends Authenticatable
     {
         return [
             'name' => auth()->user()->name,
+            'translation_language' => auth()->user()->translation_language,
             'languages' => Word::getAuthUserWordsWithMeanings(),
         ];
     }

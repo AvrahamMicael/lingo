@@ -10,6 +10,11 @@ const { getters } = useStore();
 const nav_links: Link[] = [
     { name: 'Home', href: route('home') },
 ];
+
+const dropdownLinks: Link[] = [
+    // { name: 'Profile', href: route('user.index') },
+    { name: 'Log out', href: route('logout') },
+];
 </script>
 
 <template>
@@ -36,7 +41,14 @@ const nav_links: Link[] = [
                             {{ getters.userName }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="triggerId">
-                            <InertiaLink :href="route('logout')" class="dropdown-item">Log out</InertiaLink>
+                            <InertiaLink
+                                v-for="link in dropdownLinks"
+                                :key="link.href"
+                                :href="link.href"
+                                class="dropdown-item"
+                            >
+                                {{ link.name }}
+                            </InertiaLink>
                         </div>
                     </div>
                     

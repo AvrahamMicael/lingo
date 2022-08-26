@@ -91,5 +91,6 @@ export type UserLanguages = {
 
 export type UserData = {
     name: string,
+    translation_language?: LanguageAbbrev,
     languages: UserLanguages,
 };

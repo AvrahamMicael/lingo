@@ -67,7 +67,7 @@ const checkWord = (word: string): void => {
     dispatch(ActionType.CheckWord, {
         word,
         from_language: props.lesson.language,
-        to_language: 'en',
+        to_language: getters.userTranslationLanguage,
     })
         .then(( { data } ) => {
             //check if is still the same word
@@ -92,7 +92,7 @@ const selectAddMeaning = (meaningIndex: number): void => {
         meaning,
         word: checkedWord.value,
         from_language: props.lesson.language,
-        to_language: 'en',
+        to_language: getters.userTranslationLanguage,
     })
         .then(( { data } ) => {
             changeWordLevel(data.word, data.level);

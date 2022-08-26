@@ -19,6 +19,7 @@ class UserController extends Controller
 
     public function changeTranslationLanguage(PatchTranslationLanguageRequest $req)
     {
-        //
+        auth()->user()->update($req->only('translation_language'));
+        return redirect()->route('home');
     }
 }
