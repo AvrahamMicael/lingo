@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
-import { CarouselSettings, CarouselBreakpoints, LessonWithAllData } from '@/scripts/types/index';
+import { CarouselSettings, CarouselBreakpoints, LessonDisplay, DataAndLoaded } from '@/scripts/types/index';
 import Spinner from './spinner.vue';
 import LessonCarouselItem from './lesson-carousel-item.vue';
 
-defineProps<{ title: string, lessons: LessonWithAllData[] }>();
+defineProps<{ title: string, lessonsInfo: DataAndLoaded<LessonDisplay[]>, noLessonsMessage: string }>();
 
 const settings: CarouselSettings = {
     itemsToShow: 1,
@@ -30,15 +30,18 @@ const breakpoints: CarouselBreakpoints = {
 <template>
   <section>
     <h4>{{ title }}</h4>
-    <Carousel v-if="lessons.length" :settings="settings" :breakpoints="breakpoints">
-        <Slide v-for="lesson in lessons" :key="lesson.id">
-            <LessonCarouselItem :lesson="lesson"/>
-        </Slide>
-        <template #addons>
-            <Navigation/>
-        </template>
+    <Spinner v-if="!lessonsInfo.loaded"/>
+    <Carousel v-else-if="lessonsInfo.data.length" :settings="settings" :breakpoints="breakpoints">
+      <Slide v-for="lesson in lessonsInfo.data" :key="lesson.id">
+        <LessonCarouselItem :lesson="lesson"/>
+      </Slide>
+      <template #addons>
+        <Navigation/>
+      </template>
     </Carousel>
-    <Spinner v-else/>
+    <div v-else class="alert alert-info text-center" role="alert">
+      <strong>{{ noLessonsMessage }}</strong>
+    </div>
   </section>
 </template>
 

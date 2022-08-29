@@ -1,12 +1,14 @@
 import { GetterTree } from "vuex";
 import { State } from "./state";
-import { UserLanguages, LanguageAbbrev } from '../types/index';
+import { UserLanguages, LanguageAbbrev, LessonDisplay, DataAndLoaded } from '../types/index';
 
 export type Getters = {
     userLanguages(state: State): UserLanguages,
     userName(state: State): string,
     isUserLoaded(state: State): boolean,
     userTranslationLanguage(state: State): LanguageAbbrev,
+    userImportedLessonsInfo(state: State): DataAndLoaded<LessonDisplay[]>,
+    areUserImportedLessonsLoaded(state: State): boolean,
 };
 
 export const getters: GetterTree<State, State> & Getters = {
@@ -29,6 +31,16 @@ export const getters: GetterTree<State, State> & Getters = {
 
     userTranslationLanguage({ user }) {
         return user.data.translation_language!;
+    },
+
+
+    userImportedLessonsInfo({ lessons }) {
+        return lessons.userImported;
+    },
+
+
+    areUserImportedLessonsLoaded({ lessons }) {
+        return lessons.userImported.loaded;
     },
 
 };

@@ -25,6 +25,14 @@ export interface LessonWithAllData extends Lesson {
     username: string,
 };
 
+export interface LessonDisplay {
+    id: number,
+    image: string | null,
+    created_at: string,
+    username: string,
+    title: string,
+};
+
 export interface TranslatePayload {
     word: string,
     from_language: LanguageAbbrev,
@@ -113,4 +121,9 @@ export type CarouselSettings = {
 
 export type CarouselBreakpoints = {
     [breakpoint: number]: CarouselSettings,
+};
+
+export type DataAndLoaded<T> = {
+    data: T,
+    loaded: boolean,
 };

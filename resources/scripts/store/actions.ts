@@ -5,13 +5,13 @@ import { State } from "./state";
 import { AxiosResponse } from 'axios';
 import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
-import { LessonWithAllData } from '../types/index';
+import { LessonDisplay } from '../types/index';
 
 export enum ActionType {
     CheckWord = 'checkWord',
     SelectAddMeaning = 'selectAddMeaning',
     SetUser = 'setUser',
-    GetUserLessons = 'getUserLessons',
+    GetUserImportedLessons = 'getUserImportedLessons',
 };
 
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
@@ -25,7 +25,7 @@ export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
-    [ActionType.GetUserLessons](context: ActionAugments): Promise<AxiosResponse<LessonWithAllData[]>>,
+    [ActionType.GetUserImportedLessons](context: ActionAugments): Promise<AxiosResponse<LessonDisplay[]>>,
 };
 
 const route = useRoute();
@@ -61,8 +61,13 @@ export const actions: ActionTree<State, State> & Actions = {
     },
 
 
-    async [ActionType.GetUserLessons](_) {
-        return axiosClient.get(route('lesson.index'));
+    async [ActionType.GetUserImportedLessons]({ commit }) {
+        return axiosClient.get<LessonDisplay[]>(route('lesson.index'))
+            .then(res => {
+                commit(MutationType.SetUserImportedLessons, res.data);
+                commit(MutationType.SetUserImportedLessonsLoaded);
+                return res;
+            });
     },
 
 };

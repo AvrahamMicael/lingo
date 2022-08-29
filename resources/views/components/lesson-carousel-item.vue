@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import useRoute from '@/scripts/composables/useRoute';
-import { LessonWithAllData } from '@/scripts/types';
+import { LessonDisplay } from '@/scripts/types';
 import { Inertia } from '@inertiajs/inertia';
 import CardBox from './card-box.vue';
 
 const route = useRoute();
 
-const props = defineProps<{ lesson: LessonWithAllData }>();
+const props = defineProps<{ lesson: LessonDisplay }>();
 
 const goToLesson = (): void => {
     Inertia.get(route('lesson.show', { id: props.lesson.id }));

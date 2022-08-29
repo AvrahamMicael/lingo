@@ -1,9 +1,9 @@
-import { UserData } from "../types";
+import { DataAndLoaded, LessonDisplay, UserData } from "../types";
 
 export type State = {
-    user: {
-        data: UserData,
-        loaded: boolean,
+    user: DataAndLoaded<UserData>,
+    lessons: {
+        userImported: DataAndLoaded<LessonDisplay[]>,
     },
 };
 
@@ -14,5 +14,11 @@ export const state: State = {
             languages: {},
         },
         loaded: false,
+    },
+    lessons: {
+        userImported: {
+            data: [],
+            loaded: false,
+        },
     },
 };

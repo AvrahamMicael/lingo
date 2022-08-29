@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('lessons', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_user')->constrained('users');
+            $table->string('image')->nullable()->default(null);
             $table->string('language');
             $table->string('title');
             $table->text('body');

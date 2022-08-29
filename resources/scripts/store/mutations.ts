@@ -1,13 +1,15 @@
 import { CreatedWordWithMeaning, LanguageAbbrev, UserData } from '../types';
 import { State } from './state';
 import { MutationTree } from 'vuex';
-import { WordInfo } from '../types/index';
+import { WordInfo, LessonDisplay } from '../types/index';
 
 export enum MutationType {
     AddWordMeaning = 'addWordMeaning',
     SetUser = 'setUser',
     CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
     SetUserLoaded = 'setUserLoaded',
+    SetUserImportedLessons = 'setUserImportedLessons',
+    SetUserImportedLessonsLoaded = 'setUserImportedLessonsLoaded',
 };
 
 export type Mutations = {
@@ -15,6 +17,8 @@ export type Mutations = {
     [MutationType.SetUser](state: State, userData: UserData): void,
     [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
     [MutationType.SetUserLoaded](state: State): void,
+    [MutationType.SetUserImportedLessons](state: State, displayLessons: LessonDisplay[]): void,
+    [MutationType.SetUserImportedLessonsLoaded](state: State): void,
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -58,6 +62,16 @@ export const mutations: MutationTree<State> & Mutations = {
 
     [MutationType.SetUserLoaded]({ user }) {
         user.loaded = true;
+    },
+
+
+
+    [MutationType.SetUserImportedLessons]({ lessons }, displayLessons) {
+        lessons.userImported.data = displayLessons;
+    },
+
+    [MutationType.SetUserImportedLessonsLoaded]({ lessons }) {
+        lessons.userImported.loaded = true;
     },
 
 };

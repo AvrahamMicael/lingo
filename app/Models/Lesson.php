@@ -20,10 +20,13 @@ class Lesson extends Model
 
     public static function getUserImportedLessons(): Collection
     {
-        return DB::table('lessons as l')
-            ->select('l.*', 'u.name as username')
+        $lessons = DB::table('lessons as l')
+            ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
             ->rightJoin('users as u', 'u.id', '=', 'l.id_user')
             ->where('u.id', auth()->id())
             ->get();
+
+        if($lessons[0]->id == null) return collect();
+        return $lessons;
     }
 }
