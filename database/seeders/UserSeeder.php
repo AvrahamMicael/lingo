@@ -24,5 +24,23 @@ class UserSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => $password,
         ]);
+
+        User::factory()->create([
+            'name' => 'Test User 3',
+            'email' => 'ttt@ttt.com',
+            'password' => $password,
+        ]);
+
+        User::factory()->create([
+            'name' => 'Test User 2',
+            'email' => 'tt@tt.com',
+            'password' => $password,
+        ]);
+
+        User::factory()->create([
+            'name' => 'Test User 1',
+            'email' => 't@t.com',
+            'password' => $password,
+        ]);
     }
 }

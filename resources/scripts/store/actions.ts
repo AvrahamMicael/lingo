@@ -5,11 +5,13 @@ import { State } from "./state";
 import { AxiosResponse } from 'axios';
 import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
+import { LessonWithAllData } from '../types/index';
 
 export enum ActionType {
     CheckWord = 'checkWord',
     SelectAddMeaning = 'selectAddMeaning',
     SetUser = 'setUser',
+    GetUserLessons = 'getUserLessons',
 };
 
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
@@ -23,6 +25,7 @@ export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
+    [ActionType.GetUserLessons](context: ActionAugments): Promise<AxiosResponse<LessonWithAllData[]>>,
 };
 
 const route = useRoute();
@@ -55,6 +58,11 @@ export const actions: ActionTree<State, State> & Actions = {
                 console.log(error);
                 return error;
             });
+    },
+
+
+    async [ActionType.GetUserLessons](_) {
+        return axiosClient.get(route('lesson.index'));
     },
 
 };

@@ -6,11 +6,24 @@ defineProps({
         type: String,
         default: '',
     },
+    imgSrc: String,
+    imgAlt: String,
 });
 </script>
 
 <template>
     <div class="card">
+        <img
+            v-if="imgSrc"
+            :src="imgSrc"
+            :alt="imgAlt"
+            class="card-img-top"
+            :class="
+                imgSrc == '/assets/img/img-unavailable.svg'
+                    ? 'bg-grey'
+                    : null
+            "
+        >
         <div v-if="header" class="card-header">{{ header }}</div>
         <div :class="`card-body ${bodyClass}`">
             <slot/>

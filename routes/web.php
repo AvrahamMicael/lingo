@@ -25,7 +25,7 @@ Route::group([
         'prefix' => 'user/language',
     ], function() {
         Route::middleware('without-translation-language')
-            ->get('', 'translationLanguage')->name('')->name('user.language');
+            ->get('', 'translationLanguage')->name('user.language');
 
         Route::patch('', 'changeTranslationLanguage');
     });

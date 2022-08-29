@@ -12,8 +12,17 @@ export interface Lesson {
     body: string,
     language: LanguageAbbrev,
     id?: number,
+    image?: string | null,
     created_at?: string,
     updated_at?: string,
+};
+
+export interface LessonWithAllData extends Lesson {
+    id: number,
+    image: string | null,
+    created_at: string,
+    updated_at: string,
+    username: string,
 };
 
 export interface TranslatePayload {
@@ -93,4 +102,15 @@ export type UserData = {
     name: string,
     translation_language?: LanguageAbbrev,
     languages: UserLanguages,
+};
+
+export type CarouselSnapAlign = 'start' | 'center' | 'end';
+
+export type CarouselSettings = {
+    itemsToShow: number,
+    snapAlign: CarouselSnapAlign,
+};
+
+export type CarouselBreakpoints = {
+    [breakpoint: number]: CarouselSettings,
 };

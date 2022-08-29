@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Word::class, 'id_user');
     }
+
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class, 'id_user');
+    }
 }

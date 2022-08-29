@@ -7,6 +7,13 @@ use App\Models\Lesson;
 
 class LessonController extends Controller
 {
+    public function index()
+    {
+        return response(
+            Lesson::getUserImportedLessons()
+        );
+    }
+
     public function create()
     {
         return inertia('lesson.create');
@@ -14,7 +21,7 @@ class LessonController extends Controller
 
     public function store(StoreLessonRequest $req)
     {
-        $lesson = Lesson::create($req->all());
+        $lesson = auth()->user()->lessons()->create($req->all());
         return redirect()->route('lesson.show', $lesson->id);
     }
 
