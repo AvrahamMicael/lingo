@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class Lesson extends Model
 {
@@ -16,6 +18,7 @@ class Lesson extends Model
         'body',
         'id_user',
         'language',
+        'image',
     ];
 
     public static function getUserImportedLessons(): Collection
@@ -28,5 +31,24 @@ class Lesson extends Model
 
         if($lessons[0]->id == null) return collect();
         return $lessons;
+    }
+
+    public static function storeImageIfExistsAndGetPath(?UploadedFile $image): ?string
+    {
+        if(!$image) return null;
+
+        try
+        {
+            $path = $image->store('lessons');
+            $path = $path
+                ? "storage/$path"
+                : null;
+        }
+        catch(Throwable $_)
+        {
+            return null;
+        }
+
+        return $path;
     }
 }

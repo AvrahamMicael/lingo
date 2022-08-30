@@ -8,6 +8,7 @@ defineProps({
     },
     imgSrc: String,
     imgAlt: String,
+    imgHeight: Number,
 });
 </script>
 
@@ -17,6 +18,7 @@ defineProps({
             v-if="imgSrc"
             :src="imgSrc"
             :alt="imgAlt"
+            :height="imgHeight"
             class="card-img-top"
             :class="
                 imgSrc == '/assets/img/img-unavailable.svg'

@@ -14,7 +14,12 @@ const goToLesson = (): void => {
 </script>
 
 <template>
-    <CardBox :img-src="lesson.image ?? '/assets/img/img-unavailable.svg'" @click="goToLesson" class="w-200px carousel__item">
+    <CardBox
+        :img-src="lesson.image ?? '/assets/img/img-unavailable.svg'"
+        :img-height="154"
+        @click="goToLesson"
+        class="w-200px carousel__item"
+    >
         <h5 class="card-title">{{ lesson.title }}</h5>
         <small>Imported by <em>{{ lesson.username }}</em></small>
     </CardBox>

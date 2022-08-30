@@ -29,6 +29,7 @@ class StoreLessonRequest extends FormRequest
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:12000',
             'language' => "required|string|in:$availableLanguagesAbbrev",
+            'image' => 'nullable|image|max:5000',
         ];
     }
 }

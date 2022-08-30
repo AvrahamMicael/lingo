@@ -21,7 +21,9 @@ class LessonController extends Controller
 
     public function store(StoreLessonRequest $req)
     {
-        $lesson = auth()->user()->lessons()->create($req->all());
+        $data = $req->all();
+        $data['image'] = Lesson::storeImageIfExistsAndGetPath($req->image);
+        $lesson = auth()->user()->lessons()->create($data);
         return redirect()->route('lesson.show', $lesson->id);
     }
 
