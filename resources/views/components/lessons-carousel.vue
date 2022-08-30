@@ -3,8 +3,23 @@ import { Carousel, Slide, Navigation } from 'vue3-carousel';
 import { CarouselSettings, CarouselBreakpoints, LessonDisplay, DataAndLoaded } from '@/scripts/types/index';
 import Spinner from './spinner.vue';
 import LessonCarouselItem from './lesson-carousel-item.vue';
+import { PropType } from 'vue';
 
-defineProps<{ title: string, lessonsInfo: DataAndLoaded<LessonDisplay[]>, noLessonsMessage: string }>();
+defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  lessonsInfo: {
+    type: Object as PropType<DataAndLoaded<LessonDisplay[]>>,
+    required: true,
+  },
+  noLessonsMessage: {
+    type: String,
+    required: true,
+  },
+  showImportedBy: Boolean,
+});
 
 const settings: CarouselSettings = {
     itemsToShow: 1,
@@ -33,7 +48,7 @@ const breakpoints: CarouselBreakpoints = {
     <Spinner v-if="!lessonsInfo.loaded"/>
     <Carousel v-else-if="lessonsInfo.data.length" :settings="settings" :breakpoints="breakpoints">
       <Slide v-for="lesson in lessonsInfo.data" :key="lesson.id">
-        <LessonCarouselItem :lesson="lesson"/>
+        <LessonCarouselItem :lesson="lesson" :show-imported-by="showImportedBy"/>
       </Slide>
       <template #addons>
         <Navigation/>
