@@ -27,6 +27,7 @@ class Lesson extends Model
             ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
             ->rightJoin('users as u', 'u.id', '=', 'l.id_user')
             ->where('u.id', auth()->id())
+            ->orderBy('created_at', 'desc')
             ->get();
 
         if($lessons[0]->id == null) return collect();
