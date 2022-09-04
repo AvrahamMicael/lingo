@@ -11,7 +11,6 @@ export enum ActionType {
     CheckWord = 'checkWord',
     SelectAddMeaning = 'selectAddMeaning',
     SetUser = 'setUser',
-    GetUserImportedLessons = 'getUserImportedLessons',
 };
 
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
@@ -25,7 +24,6 @@ export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
-    [ActionType.GetUserImportedLessons](context: ActionAugments): Promise<AxiosResponse<LessonDisplay[]>>,
 };
 
 const route = useRoute();
@@ -60,14 +58,5 @@ export const actions: ActionTree<State, State> & Actions = {
             });
     },
 
-
-    async [ActionType.GetUserImportedLessons]({ commit }) {
-        return axiosClient.get<LessonDisplay[]>(route('lesson.index'))
-            .then(res => {
-                commit(MutationType.SetUserImportedLessons, res.data);
-                commit(MutationType.SetUserImportedLessonsLoaded);
-                return res;
-            });
-    },
 
 };

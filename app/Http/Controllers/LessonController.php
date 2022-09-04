@@ -29,6 +29,7 @@ class LessonController extends Controller
 
     public function show(Lesson $lesson)
     {
+        $lesson->createOrUpdateLastOpenedAt();
         return inertia('lesson.show', compact('lesson'));
     }
 }

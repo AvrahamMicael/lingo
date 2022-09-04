@@ -26,7 +26,7 @@ const handleSubmit = (): void => {
     <form @submit.prevent="handleSubmit">
         <LabelInput label="Name:" v-model="registerForm.name" required/>
         <FormError :error="registerForm.errors.name"/>
-        <LabelInput label="Email:" v-model="registerForm.email" required/>
+        <LabelInput label="Email:" type="email" v-model="registerForm.email" required/>
         <FormError :error="registerForm.errors.email"/>
         <LabelInput label="Password:" v-model="registerForm.password" type="password" required/>
         <FormError :error="registerForm.errors.password"/>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WordController;
@@ -34,7 +35,7 @@ Route::group([
     Route::group([
         'middleware' => 'with-translation-language'
     ], function() {
-        Route::inertia('/', 'home')->name('home');
+        Route::get('/', [HomeController::class, 'index'])->name('home');
 
         Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
         

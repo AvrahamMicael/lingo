@@ -8,7 +8,6 @@ const { dispatch, getters } = useStore();
 
 onBeforeMount(() => {
 	if(!getters.isUserLoaded) dispatch(ActionType.SetUser);
-	if(!getters.areUserImportedLessonsLoaded) dispatch(ActionType.GetUserImportedLessons);
 });
 </script>
 

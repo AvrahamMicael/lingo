@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
-import { CarouselSettings, CarouselBreakpoints, LessonDisplay, DataAndLoaded } from '@/scripts/types/index';
-import Spinner from './spinner.vue';
+import { CarouselSettings, CarouselBreakpoints, LessonDisplay } from '@/scripts/types/index';
 import LessonCarouselItem from './lesson-carousel-item.vue';
 import { PropType } from 'vue';
 
@@ -11,43 +10,43 @@ defineProps({
     required: true,
   },
   lessonsInfo: {
-    type: Object as PropType<DataAndLoaded<LessonDisplay[]>>,
+    type: Object as PropType<LessonDisplay[]>,
     required: true,
   },
   noLessonsMessage: {
     type: String,
-    required: true,
+    default: 'Lessons not found',
   },
   showImportedBy: Boolean,
+  disappearIfLessonsNotFound: Boolean,
 });
 
 const settings: CarouselSettings = {
-    itemsToShow: 1,
-    snapAlign: 'center',
+  itemsToShow: 1,
+  snapAlign: 'center',
 };
 
 const breakpoints: CarouselBreakpoints = {
-    340: {
-        itemsToShow: 3,
-        snapAlign: 'start',
-    },
-    500: {
-        itemsToShow: 4,
-        snapAlign: 'start',
-    },
-    768: {
-        itemsToShow: 6,
-        snapAlign: 'start',
-    },
+  340: {
+    itemsToShow: 3,
+    snapAlign: 'start',
+  },
+  500: {
+    itemsToShow: 4,
+    snapAlign: 'start',
+  },
+  768: {
+    itemsToShow: 6,
+    snapAlign: 'start',
+  },
 };
 </script>
 
 <template>
-  <section>
+  <section v-if="lessonsInfo.length || !disappearIfLessonsNotFound" class="mb-2">
     <h4>{{ title }}</h4>
-    <Spinner v-if="!lessonsInfo.loaded"/>
-    <Carousel v-else-if="lessonsInfo.data.length" :settings="settings" :breakpoints="breakpoints">
-      <Slide v-for="lesson in lessonsInfo.data" :key="lesson.id">
+    <Carousel v-if="lessonsInfo.length" :settings="settings" :breakpoints="breakpoints">
+      <Slide v-for="lesson in lessonsInfo" :key="lesson.id">
         <LessonCarouselItem :lesson="lesson" :show-imported-by="showImportedBy"/>
       </Slide>
       <template #addons>

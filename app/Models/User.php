@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Lesson::class, 'id_user');
     }
+
+    public function lastOpenedLessons(): HasMany
+    {
+        return $this->hasMany(LastOpenedLesson::class, 'id_user');
+    }
 }

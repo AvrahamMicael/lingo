@@ -10,6 +10,10 @@ export enum MutationType {
     SetUserLoaded = 'setUserLoaded',
     SetUserImportedLessons = 'setUserImportedLessons',
     SetUserImportedLessonsLoaded = 'setUserImportedLessonsLoaded',
+    SetUserLastOpenedLessons = 'setUserLastOpenedLessons',
+    SetUserLastOpenedLessonsLoaded = 'setUserLastOpenedLessonsLoaded',
+    UnshiftUserLastOpenedLessons = 'unshiftUserLastOpenedLessons',
+    UpdateLastOpenedLessonOrder = 'updateLastOpenedLessonOrder',
 };
 
 export type Mutations = {
@@ -19,6 +23,10 @@ export type Mutations = {
     [MutationType.SetUserLoaded](state: State): void,
     [MutationType.SetUserImportedLessons](state: State, displayLessons: LessonDisplay[]): void,
     [MutationType.SetUserImportedLessonsLoaded](state: State): void,
+    [MutationType.SetUserLastOpenedLessons](state: State, displayLessons: LessonDisplay[]): void,
+    [MutationType.SetUserLastOpenedLessonsLoaded](state: State): void,
+    [MutationType.UnshiftUserLastOpenedLessons](state: State, displayLesson: LessonDisplay): void,
+    [MutationType.UpdateLastOpenedLessonOrder](state: State, idLesson: number): void,
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -72,6 +80,21 @@ export const mutations: MutationTree<State> & Mutations = {
 
     [MutationType.SetUserImportedLessonsLoaded]({ lessons }) {
         lessons.userImported.loaded = true;
+    },
+
+
+
+    [MutationType.SetUserLastOpenedLessons]({ lessons }, displayLessons) {
+        lessons.lastOpened.data = displayLessons;
+    },
+
+    [MutationType.SetUserLastOpenedLessonsLoaded]({ lessons }) {
+        lessons.lastOpened.loaded = true;
+    },
+
+
+    [MutationType.UnshiftUserLastOpenedLessons]({ lessons }, displayLesson) {
+        lessons.lastOpened.data.unshift(displayLesson);
     },
 
 };

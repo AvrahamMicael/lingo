@@ -22,7 +22,7 @@ const handleSubmit = (): void => {
 
 <template layout="card">
     <form @submit.prevent="handleSubmit">
-        <LabelInput label="Email:" v-model="loginForm.email" required/>
+        <LabelInput label="Email:" type="email" v-model="loginForm.email" required/>
         <FormError :error="loginForm.errors.email"/>
         <LabelInput label="Password:" v-model="loginForm.password" type="password" required/>
         <FormError :error="loginForm.errors.password"/>

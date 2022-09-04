@@ -7,8 +7,6 @@ export type Getters = {
     userName(state: State): string,
     isUserLoaded(state: State): boolean,
     userTranslationLanguage(state: State): LanguageAbbrev,
-    userImportedLessonsInfo(state: State): DataAndLoaded<LessonDisplay[]>,
-    areUserImportedLessonsLoaded(state: State): boolean,
 };
 
 export const getters: GetterTree<State, State> & Getters = {
@@ -31,16 +29,6 @@ export const getters: GetterTree<State, State> & Getters = {
 
     userTranslationLanguage({ user }) {
         return user.data.translation_language!;
-    },
-
-
-    userImportedLessonsInfo({ lessons }) {
-        return lessons.userImported;
-    },
-
-
-    areUserImportedLessonsLoaded({ lessons }) {
-        return lessons.userImported.loaded;
     },
 
 };
