@@ -3,6 +3,11 @@
     --gold-color: 255, 215, 0;
 }
 
+*
+{
+    box-sizing: border-box;
+}
+
 html,
 body
 {

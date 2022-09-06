@@ -28,14 +28,22 @@ const settings: CarouselSettings = {
 
 const breakpoints: CarouselBreakpoints = {
   340: {
+    itemsToShow: 2,
+    snapAlign: 'start',
+  },
+  424: {
     itemsToShow: 3,
     snapAlign: 'start',
   },
-  500: {
+  768: {
     itemsToShow: 4,
     snapAlign: 'start',
   },
-  768: {
+  992: {
+    itemsToShow: 5,
+    snapAlign: 'start',
+  },
+  1200: {
     itemsToShow: 6,
     snapAlign: 'start',
   },

@@ -27,7 +27,7 @@ const goToLesson = (): void => {
         @click="goToLesson"
         class="w-200px carousel__item"
     >
-        <h5 class="card-title">{{ lesson.title }}</h5>
+        <h5 class="card-title text-break mb-0 text-truncate">{{ lesson.title }}</h5>
         <small v-if="showImportedBy">Imported by <em>{{ lesson.username }}</em></small>
     </CardBox>
 </template>
