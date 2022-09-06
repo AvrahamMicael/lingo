@@ -1,6 +1,6 @@
 import { GetterTree } from "vuex";
 import { State } from "./state";
-import { UserLanguages, LanguageAbbrev, LessonDisplay, DataAndLoaded } from '../types/index';
+import { UserLanguages, LanguageAbbrev } from '../types/index';
 
 export type Getters = {
     userLanguages(state: State): UserLanguages,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Lesson, WordInfo } from '@/scripts/types/index.js';
+import { Lesson, StoreWordPayload, WordInfo } from '@/scripts/types/index.js';
 import CardBox from '@/views/components/card-box.vue';
 import { ref } from '@vue/runtime-core';
 import v from 'voca';
@@ -12,6 +12,7 @@ import { Meaning } from '@/scripts/types/index';
 import { ActionType } from '@/scripts/store/actions';
 import { MutationType } from '@/scripts/store/mutations';
 import Spinner from '../../components/spinner.vue';
+import SavedMeaningsList from '@/views/components/saved-meanings-list.vue';
 
 const { getters, commit, dispatch } = useStore();
 
@@ -43,7 +44,7 @@ const replaceWordsWithSpan = (): void => {
 
 const checkedWord = ref<string>('');
 const checkedWordMeanings = ref<Meaning[]>([]);
-
+const checkedWordSavedMeanings = computed<Meaning[]>(() => getters.userLanguages[props.lesson.language]!.words.find(wordInfo => wordInfo.word == checkedWord.value)?.meanings ?? []);
 
 const lessonWordsSpans = computed<HTMLSpanElement[]>(() => 
     Array.from(document.querySelectorAll('div.card-body p.lesson-body span')) as HTMLSpanElement[]
@@ -85,19 +86,38 @@ const toggleWordPopup = (): void => {
 };
 
 
+const storeWordPayloadWithoutMeaning = computed<Omit<StoreWordPayload, 'meaning'>>(() => ({
+    word: checkedWord.value,
+    from_language: props.lesson.language,
+    to_language: getters.userTranslationLanguage,
+}));
 
 const selectAddMeaning = (meaningIndex: number): void => {
     const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
     dispatch(ActionType.SelectAddMeaning, {
         meaning,
-        word: checkedWord.value,
-        from_language: props.lesson.language,
-        to_language: getters.userTranslationLanguage,
+        ...storeWordPayloadWithoutMeaning.value,
     })
         .then(( { data } ) => {
             changeWordLevel(data.word, data.level);
-        })
-        .finally(toggleWordPopup);
+        });
+    toggleWordPopup();
+};
+
+
+
+const createMeaning = (newMeaning: string): void => {
+    dispatch(ActionType.SelectAddMeaning, {
+        meaning: {
+            value: newMeaning,
+            isGoogleTranslate: false,
+        },
+        ...storeWordPayloadWithoutMeaning.value,
+    })
+        .then(( { data } ) => {
+            changeWordLevel(data.word, data.level);
+        });
+    toggleWordPopup();
 };
 
 
@@ -129,11 +149,10 @@ onBeforeMount(replaceWordsWithSpanIfUserLoaded);
                 <h5>{{ checkedWord }}</h5>
                 <hr>
 
-                <textarea rows="1" placeholder="Type a new meaning here" class="form-control mb-2"></textarea>
-                
-
-                <!-- <div>Saved Meanings</div>
-                <div>meaning 1</div> -->
+                <SavedMeaningsList
+                    :meanings="checkedWordSavedMeanings"
+                    @create-meaning="createMeaning"
+                />
 
                 <h5>Meanings</h5>
 
