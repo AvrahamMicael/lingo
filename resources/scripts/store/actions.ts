@@ -1,16 +1,16 @@
 import { ActionContext, ActionTree } from "vuex";
-import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord } from "../types";
+import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord, MeaningWithId, UpdateMeaningPayload } from "../types";
 import { Mutations, MutationType } from "./mutations";
 import { State } from "./state";
 import { AxiosResponse } from 'axios';
 import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
-import { LessonDisplay } from '../types/index';
 
 export enum ActionType {
     CheckWord = 'checkWord',
     SelectAddMeaning = 'selectAddMeaning',
     SetUser = 'setUser',
+    UpdateMeaning = 'updateMeaning',
 };
 
 type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
@@ -24,6 +24,7 @@ export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
+    [ActionType.UpdateMeaning](context: ActionAugments, updateMeaningPayload: UpdateMeaningPayload): Promise<AxiosResponse<''>>,
 };
 
 const route = useRoute();
@@ -39,8 +40,9 @@ export const actions: ActionTree<State, State> & Actions = {
             .then(res => {
                 const createdWord = res.data;
                 const { meaning } = storeWordPayload;
+                const meaningWithId: MeaningWithId  = { ...meaning, id: res.data.id_meaning };
                 commit(MutationType.CreateUserLangIfDoesntExist, createdWord.from_language);
-                commit(MutationType.AddWordMeaning, { createdWord, meaning });
+                commit(MutationType.AddWordMeaning, { createdWord, meaning: meaningWithId });
                 return res;
             });
     },
@@ -58,5 +60,17 @@ export const actions: ActionTree<State, State> & Actions = {
             });
     },
 
+
+    async [ActionType.UpdateMeaning]({ commit }, { newMeaning, idMeaning, userLanguage }) {
+        return await axiosClient.patch<''>(route('meaning.update', { id: idMeaning }), { newMeaning })
+            .then(res => {
+                commit(MutationType.UpdateMeaning, { newMeaning, idMeaning, userLanguage });
+                return res;
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+    },
 
 };

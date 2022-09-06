@@ -57,6 +57,10 @@ export interface Meaning {
     id_word?: number,
 };
 
+export type MeaningWithId = Meaning & {
+    id: number,
+};
+
 export interface WordWithMeaning {
     word: string,
     meaning: Meaning,
@@ -67,13 +71,14 @@ export interface CreatedWord {
     id_user: number,
     to_language: LanguageAbbrev,
     from_language: LanguageAbbrev,
-    word: LanguageAbbrev,
+    word: string,
     level: number,
+    id_meaning: number,
 };
 
 export interface CreatedWordWithMeaning {
     createdWord: CreatedWord,
-    meaning: Meaning
+    meaning: MeaningWithId
 };
 
 export type LoginForm = {
@@ -92,7 +97,7 @@ export type WordInfo = {
     from_language?: LanguageAbbrev,
     word: string,
     level: number,
-    meanings: Meaning[],
+    meanings: MeaningWithId[],
 };
 
 export type UserLanguageInfo = {
@@ -126,4 +131,15 @@ export type CarouselBreakpoints = {
 export type DataAndLoaded<T> = {
     data: T,
     loaded: boolean,
+};
+
+export type UpdateMeaningPayload = {
+    newMeaning: string,
+    idMeaning: number,
+    userLanguage: LanguageAbbrev,
+};
+
+export type EditMeaningEmitPayload = {
+    newMeaning: string,
+    idMeaning: number,
 };

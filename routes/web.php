@@ -42,7 +42,12 @@ Route::group([
         
         Route::resource('lesson', LessonController::class);
         
-        Route::get('/meanings/{from_language}/{to_language}/{word}', [MeaningController::class, 'wordMeanings'])->name('word.meanings');
+        Route::group([
+            'controller' => MeaningController::class,
+        ], function() {
+            Route::get('/meanings/{from_language}/{to_language}/{word}', 'wordMeanings')->name('word.meanings');
+            Route::patch('/meaning/{id}', 'update')->name('meaning.update');
+        });
 
         Route::resource('word', WordController::class);
     });

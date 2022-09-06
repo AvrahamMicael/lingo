@@ -10,11 +10,11 @@ class WordController extends Controller
     {
         $createdWord = auth()->user()->words()->create($req->all());
 
-        $createdWord->meanings()->create([
+        $id_meaning = $createdWord->meanings()->create([
             'value' => $req->meaning['value'],
             'isGoogleTranslate' => $req->meaning['isGoogleTranslate'],
             'to_language' => $req->to_language,
-        ]);
+        ])->id;
 
         $createdWord = [
             'id' => $createdWord->id,
@@ -23,6 +23,7 @@ class WordController extends Controller
             'from_language' => $req->from_language,
             'word' => $req->word,
             'level' => 1,
+            'id_meaning' => $id_meaning,
         ];
 
         return response($createdWord, 201);

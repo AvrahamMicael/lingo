@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateMeaningRequest;
 use App\Models\Language;
-use Illuminate\Http\Request;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class MeaningController extends Controller
@@ -20,5 +20,18 @@ class MeaningController extends Controller
                 // ...
             ],
         ]);
+    }
+
+    public function update(UpdateMeaningRequest $req, int $id)
+    {
+        $meaning = auth()->user()->meanings()->where('meanings.id', $id);
+        if($meaning->exists())
+        {
+            $meaning->update([
+                'value' => $req->newMeaning,
+            ]);
+        }
+        
+        return response('');
     }
 }

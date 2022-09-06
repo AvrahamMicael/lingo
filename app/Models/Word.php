@@ -31,7 +31,7 @@ class Word extends Model
                 Word::where('id_user', auth()->id())
                     ->with([
                         'meanings' => function($q) {
-                            $q->select('id_word', 'value', 'isGoogleTranslate');
+                            $q->select('id', 'id_word', 'value', 'isGoogleTranslate');
                         },
                     ])
                     ->get()

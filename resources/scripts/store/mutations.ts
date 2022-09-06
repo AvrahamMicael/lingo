@@ -1,19 +1,13 @@
-import { CreatedWordWithMeaning, LanguageAbbrev, UserData } from '../types';
+import { CreatedWordWithMeaning, LanguageAbbrev, UserData, WordInfo, UpdateMeaningPayload } from '../types';
 import { State } from './state';
 import { MutationTree } from 'vuex';
-import { WordInfo, LessonDisplay } from '../types/index';
 
 export enum MutationType {
     AddWordMeaning = 'addWordMeaning',
     SetUser = 'setUser',
     CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
     SetUserLoaded = 'setUserLoaded',
-    SetUserImportedLessons = 'setUserImportedLessons',
-    SetUserImportedLessonsLoaded = 'setUserImportedLessonsLoaded',
-    SetUserLastOpenedLessons = 'setUserLastOpenedLessons',
-    SetUserLastOpenedLessonsLoaded = 'setUserLastOpenedLessonsLoaded',
-    UnshiftUserLastOpenedLessons = 'unshiftUserLastOpenedLessons',
-    UpdateLastOpenedLessonOrder = 'updateLastOpenedLessonOrder',
+    UpdateMeaning = 'updateMeaning',
 };
 
 export type Mutations = {
@@ -21,12 +15,7 @@ export type Mutations = {
     [MutationType.SetUser](state: State, userData: UserData): void,
     [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
     [MutationType.SetUserLoaded](state: State): void,
-    [MutationType.SetUserImportedLessons](state: State, displayLessons: LessonDisplay[]): void,
-    [MutationType.SetUserImportedLessonsLoaded](state: State): void,
-    [MutationType.SetUserLastOpenedLessons](state: State, displayLessons: LessonDisplay[]): void,
-    [MutationType.SetUserLastOpenedLessonsLoaded](state: State): void,
-    [MutationType.UnshiftUserLastOpenedLessons](state: State, displayLesson: LessonDisplay): void,
-    [MutationType.UpdateLastOpenedLessonOrder](state: State, idLesson: number): void,
+    [MutationType.UpdateMeaning](state: State, updateMeaningPayload: UpdateMeaningPayload): void,
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -73,28 +62,18 @@ export const mutations: MutationTree<State> & Mutations = {
     },
 
 
-
-    [MutationType.SetUserImportedLessons]({ lessons }, displayLessons) {
-        lessons.userImported.data = displayLessons;
-    },
-
-    [MutationType.SetUserImportedLessonsLoaded]({ lessons }) {
-        lessons.userImported.loaded = true;
-    },
-
-
-
-    [MutationType.SetUserLastOpenedLessons]({ lessons }, displayLessons) {
-        lessons.lastOpened.data = displayLessons;
-    },
-
-    [MutationType.SetUserLastOpenedLessonsLoaded]({ lessons }) {
-        lessons.lastOpened.loaded = true;
-    },
-
-
-    [MutationType.UnshiftUserLastOpenedLessons]({ lessons }, displayLesson) {
-        lessons.lastOpened.data.unshift(displayLesson);
+    [MutationType.UpdateMeaning]({ user }, { idMeaning, newMeaning, userLanguage }) {
+        let shouldBreak: boolean = false;
+        user.data.languages[userLanguage]!.words.every(wordInfo => {
+            wordInfo.meanings.forEach(meaning => {
+                if(meaning.id == idMeaning)
+                {
+                    meaning.value = newMeaning;
+                    shouldBreak = true;
+                }
+            });
+            return !shouldBreak;
+        });
     },
 
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Lesson, StoreWordPayload, WordInfo } from '@/scripts/types/index.js';
+import { EditMeaningEmitPayload, Lesson, MeaningWithId, StoreWordPayload, WordInfo } from '@/scripts/types/index.js';
 import CardBox from '@/views/components/card-box.vue';
 import { ref } from '@vue/runtime-core';
 import v from 'voca';
@@ -44,7 +44,7 @@ const replaceWordsWithSpan = (): void => {
 
 const checkedWord = ref<string>('');
 const checkedWordMeanings = ref<Meaning[]>([]);
-const checkedWordSavedMeanings = computed<Meaning[]>(() => getters.userLanguages[props.lesson.language]!.words.find(wordInfo => wordInfo.word == checkedWord.value)?.meanings ?? []);
+const checkedWordSavedMeanings = computed<MeaningWithId[]>(() => getters.userLanguages[props.lesson.language]!.words.find(wordInfo => wordInfo.word == checkedWord.value)?.meanings ?? []);
 
 const lessonWordsSpans = computed<HTMLSpanElement[]>(() => 
     Array.from(document.querySelectorAll('div.card-body p.lesson-body span')) as HTMLSpanElement[]
@@ -121,6 +121,14 @@ const createMeaning = (newMeaning: string): void => {
 };
 
 
+const editMeaning = ({ newMeaning, idMeaning }: EditMeaningEmitPayload): void => {
+    dispatch(ActionType.UpdateMeaning, {
+        newMeaning,
+        idMeaning,
+        userLanguage: props.lesson.language,
+    });
+};
+
 
 const replaceWordsWithSpanIfUserLoaded = (): void => {
     if(getters.isUserLoaded) replaceWordsWithSpan();
@@ -152,6 +160,7 @@ onBeforeMount(replaceWordsWithSpanIfUserLoaded);
                 <SavedMeaningsList
                     :meanings="checkedWordSavedMeanings"
                     @create-meaning="createMeaning"
+                    @edit-meaning="editMeaning"
                 />
 
                 <h5>Meanings</h5>
