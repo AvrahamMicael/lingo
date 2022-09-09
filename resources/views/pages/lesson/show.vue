@@ -3,16 +3,16 @@ import { EditMeaningEmitPayload, Lesson, MeaningWithId, StoreWordPayload, WordIn
 import CardBox from '@/views/components/card-box.vue';
 import { ref } from '@vue/runtime-core';
 import v from 'voca';
-import RenderLessonBody from '@/views/components/render-lesson-body.vue';
 import WordPopup from '@/views/components/word-popup.vue';
 import { computed } from '@vue/reactivity';
-import { watch, onBeforeMount } from 'vue';
+import { watch, onBeforeMount, onUnmounted } from 'vue';
 import { useStore } from '@/scripts/store/index';
 import { Meaning } from '@/scripts/types/index';
 import { ActionType } from '@/scripts/store/actions';
 import { MutationType } from '@/scripts/store/mutations';
 import Spinner from '../../components/spinner.vue';
 import SavedMeaningsList from '@/views/components/saved-meanings-list.vue';
+import LessonBodyCarousel from '../../components/lesson-body-carousel.vue';
 
 const { getters, commit, dispatch } = useStore();
 
@@ -25,10 +25,12 @@ const lessonLanguageUserWords = computed<WordInfo[]>(() => {
 const lesson_body_modified = ref<string>(props.lesson.body);
 const is_lesson_body_modified_ready = ref<boolean>(false);
 
-const replaceWordsWithSpan = (): void => {
+const unique_words: string[] = (() => {
     const lesson_words = v.words(v.lowerCase(props.lesson.body));
-    const unique_words = [...new Set(lesson_words)];
+    return [...new Set(lesson_words)];
+})();
 
+const replaceWordsWithSpan = (): void => {
     unique_words.forEach((uniq_word: string): void => {
         const wordLevel: number = lessonLanguageUserWords.value.find((wordInfo: WordInfo) => wordInfo.word == uniq_word)?.level
             ?? 0;
@@ -62,7 +64,7 @@ const changeWordLevel = (word: string, level: number): void => {
 };
 
 
-const checkWord = (word: string): void => {
+const checkWord = (word: Lowercase<string>): void => {
     checkedWord.value = word;
 
     dispatch(ActionType.CheckWord, {
@@ -136,15 +138,23 @@ const replaceWordsWithSpanIfUserLoaded = (): void => {
 
 watch(() => getters.isUserLoaded, replaceWordsWithSpanIfUserLoaded);
 
-onBeforeMount(replaceWordsWithSpanIfUserLoaded);
+onBeforeMount(() => {
+    replaceWordsWithSpanIfUserLoaded();
+    document.body.style.overflowY = 'hidden';
+});
+
+onUnmounted(() => {
+    document.body.style.overflowY = 'auto';
+});
 </script>
 
 <template layout>
-    <CardBox :header="lesson.title" class="lesson-card" body-class="d-flex flex-column">
-        <RenderLessonBody
+    <CardBox :header="lesson.title" class="lesson-card">
+        <LessonBodyCarousel
             v-if="is_lesson_body_modified_ready"
             @checkWord="checkWord"
-            :lesson_body="lesson_body_modified"
+            :lesson-body="lesson_body_modified"
+            :unique-words-set="unique_words"
         />
         <Spinner v-else/>
 

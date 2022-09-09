@@ -14,7 +14,7 @@ onBeforeMount(() => {
 <template>
 	<div>
 		<AppHeader/>
-		<main class="container mt-4">
+		<main class="container-md mt-4">
 			<slot />
 		</main>
 	</div>

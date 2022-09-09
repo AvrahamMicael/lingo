@@ -57,6 +57,11 @@ body
     max-height: 90vh;
 }
 
+p.lesson-body
+{
+    overflow-y: hidden;
+}
+
 .popup-outer
 {
     position: fixed;
