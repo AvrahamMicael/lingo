@@ -171,7 +171,7 @@ onUnmounted(() => {
         />
         <Spinner v-else/>
 
-        <WordPopup :word="checkedWord">
+        <WordPopup @toggle="toggleWordPopup" :word="checkedWord">
             <CardBox>
                 <button @click="toggleWordPopup" class="btn btn-sm btn-outline-secondary float-end d-flex align-items-center">
                     <img src="/assets/img/x.svg" alt="close">
