@@ -154,7 +154,6 @@ onUnmounted(() => {
             v-if="is_lesson_body_modified_ready"
             @checkWord="checkWord"
             :lesson-body="lesson_body_modified"
-            :unique-words-set="unique_words"
         />
         <Spinner v-else/>
 

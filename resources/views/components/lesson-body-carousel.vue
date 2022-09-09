@@ -7,7 +7,7 @@ import removePxAndChangeToNumber from '@/scripts/functions/removePxChangeToNumbe
 import { ref } from '@vue/runtime-core';
 import vh from '@/scripts/functions/vh';
 
-const props = defineProps<{ lessonBody: string, uniqueWordsSet: string[] }>();
+const props = defineProps<{ lessonBody: string }>();
 
 const emit = defineEmits({
     checkWord(word: Lowercase<string>) {
