@@ -146,6 +146,19 @@ const editMeaning = ({ newMeaning, idMeaning }: EditMeaningEmitPayload): void =>
 };
 
 
+const speech = (): void => {
+    if ('speechSynthesis' in window)
+    {
+        if(props.lesson.language == 'la') alert('Latin is not available to speech!');
+        const msg = new SpeechSynthesisUtterance();
+        msg.lang = props.lesson.language;
+        msg.text = checkedWord.value;
+        window.speechSynthesis.speak(msg);
+    }
+    else alert("Sorry, your browser doesn't support text to speech!");
+};
+
+
 const replaceWordsWithSpanIfUserLoaded = (): void => {
     if(getters.isUserLoaded) replaceWordsWithSpan();
 };
@@ -173,12 +186,18 @@ onUnmounted(() => {
 
         <WordPopup @toggle="toggleWordPopup" :word="checkedWord">
             <CardBox>
-                <button @click="toggleWordPopup" class="btn btn-sm btn-outline-secondary float-end d-flex align-items-center">
+                <button @click="toggleWordPopup" type="button" class="btn btn-sm btn-outline-secondary float-end d-flex align-items-center">
                     <img src="/assets/img/x.svg" alt="close">
                 </button>
 
-                <h5>{{ checkedWord }}</h5>
-                <hr>
+                <div class="d-flex">
+                    <button @click="speech" type="button" class="btn btn-sm btn-outline-secondary">
+                        <span class="sr-only">Audio Speech</span>
+                        <i class="fa-solid fa-volume-high"/>
+                    </button>
+                    <h5 class="d-inline my-auto ms-1">{{ checkedWord }}</h5>
+                </div>
+                <hr class="my-2">
 
                 <SavedMeaningsList
                     :meanings="checkedWordSavedMeanings"
