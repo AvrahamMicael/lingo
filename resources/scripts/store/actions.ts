@@ -1,5 +1,5 @@
 import { ActionContext, ActionTree } from "vuex";
-import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord, MeaningWithId, UpdateMeaningPayload } from "../types";
+import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord, MeaningWithId, UpdateMeaningPayload, SelectAddOtherMeaningToWordPayload, SelectAddOtherMeaningToWordResponse } from "../types";
 import { Mutations, MutationType } from "./mutations";
 import { State } from "./state";
 import { AxiosResponse } from 'axios';
@@ -8,7 +8,8 @@ import useRoute from '../composables/useRoute';
 
 export enum ActionType {
     CheckWord = 'checkWord',
-    SelectAddMeaning = 'selectAddMeaning',
+    SelectAddMeaningToNewWord = 'selectAddMeaningToNewWord',
+    SelectAddOtherMeaningToWord = 'selectAddOtherMeaningToWord',
     SetUser = 'setUser',
     UpdateMeaning = 'updateMeaning',
 };
@@ -22,9 +23,10 @@ type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
 
 export type Actions = {
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
-    [ActionType.SelectAddMeaning](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
+    [ActionType.SelectAddMeaningToNewWord](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
     [ActionType.UpdateMeaning](context: ActionAugments, updateMeaningPayload: UpdateMeaningPayload): Promise<AxiosResponse<''>>,
+    [ActionType.SelectAddOtherMeaningToWord](context: ActionAugments, selectAddOtherMeaningToWordPayload: SelectAddOtherMeaningToWordPayload): Promise<AxiosResponse<SelectAddOtherMeaningToWordResponse>>,
 };
 
 const route = useRoute();
@@ -35,17 +37,31 @@ export const actions: ActionTree<State, State> & Actions = {
         return await axiosClient.get<{ meanings: Meaning[] }>(route('word.meanings', translatePayload));
     },
 
-    async [ActionType.SelectAddMeaning]({ commit }, storeWordPayload) {
+    async [ActionType.SelectAddMeaningToNewWord]({ commit }, storeWordPayload) {
         return await axiosClient.post<CreatedWord>(route('word.store'), storeWordPayload)
             .then(res => {
                 const createdWord = res.data;
                 const { meaning } = storeWordPayload;
                 const meaningWithId: MeaningWithId  = { ...meaning, id: res.data.id_meaning };
                 commit(MutationType.CreateUserLangIfDoesntExist, createdWord.from_language);
-                commit(MutationType.AddWordMeaning, { createdWord, meaning: meaningWithId });
+                commit(MutationType.AddNewWordMeaning, { createdWord, meaning: meaningWithId });
                 return res;
             });
     },
+
+
+    async [ActionType.SelectAddOtherMeaningToWord]({ commit }, payload) {
+        return axiosClient.post<SelectAddOtherMeaningToWordResponse>(route('meaning.add'), payload)
+            .then(res => {
+                commit(MutationType.AddWordOtherMeaning, res.data);
+                return res;
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+    },
+
 
     async [ActionType.SetUser]({ commit }) {
         return await axiosClient.get<UserData>(route('user.data'))
@@ -72,5 +88,6 @@ export const actions: ActionTree<State, State> & Actions = {
                 return error;
             });
     },
+
 
 };

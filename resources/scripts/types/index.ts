@@ -39,6 +39,12 @@ export interface TranslatePayload {
     to_language: LanguageAbbrev,
 };
 
+export interface Meaning {
+    value: string,
+    isGoogleTranslate: boolean,
+    id_word?: number,
+};
+
 export interface StoreWordPayload {
     word: string,
     meaning: Meaning,
@@ -49,12 +55,6 @@ export interface StoreWordPayload {
 export interface OptionValueAndName {
     value: string,
     name: string,
-};
-
-export interface Meaning {
-    value: string,
-    isGoogleTranslate: boolean,
-    id_word?: number,
 };
 
 export type MeaningWithId = Meaning & {
@@ -142,4 +142,15 @@ export type UpdateMeaningPayload = {
 export type EditMeaningEmitPayload = {
     newMeaning: string,
     idMeaning: number,
+};
+
+export type SelectAddOtherMeaningToWordPayload = {
+    id_word: number,
+    meaning: Meaning,
+    to_language: LanguageAbbrev;
+    word: string,
+};
+
+export type SelectAddOtherMeaningToWordResponse = Required<MeaningWithId> & {
+    to_language: LanguageAbbrev,
 };

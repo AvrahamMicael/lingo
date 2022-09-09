@@ -1,17 +1,21 @@
-import { CreatedWordWithMeaning, LanguageAbbrev, UserData, WordInfo, UpdateMeaningPayload } from '../types';
+import { CreatedWordWithMeaning, LanguageAbbrev, UserData, WordInfo, UpdateMeaningPayload, SelectAddOtherMeaningToWordResponse, MeaningWithId } from '../types';
 import { State } from './state';
 import { MutationTree } from 'vuex';
 
 export enum MutationType {
-    AddWordMeaning = 'addWordMeaning',
+    AddWordOtherMeaning = 'addWordOtherMeaning',
+    AddNewWordMeaning = 'addNewWordMeaning',
     SetUser = 'setUser',
     CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
     SetUserLoaded = 'setUserLoaded',
     UpdateMeaning = 'updateMeaning',
 };
 
+// meaning with all, word 
+
 export type Mutations = {
-    [MutationType.AddWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
+    [MutationType.AddWordOtherMeaning](state: State, payload: SelectAddOtherMeaningToWordResponse): void,
+    [MutationType.AddNewWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
     [MutationType.SetUser](state: State, userData: UserData): void,
     [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
     [MutationType.SetUserLoaded](state: State): void,
@@ -20,29 +24,28 @@ export type Mutations = {
 
 export const mutations: MutationTree<State> & Mutations = {
 
-    [MutationType.AddWordMeaning]({ user }, { createdWord, meaning }) {
 
-        const userLanguageWords: WordInfo[] = Object.entries(user.data.languages)
-            .find(entries => entries[0] == createdWord.from_language)![1]
-            .words;
+    [MutationType.AddWordOtherMeaning]({ user }, { id, id_word, to_language, value, isGoogleTranslate }) {
+        user.data
+            .languages[to_language]!
+            .words
+            .find(wordInfo => wordInfo.id == id_word)!
+            .meanings
+            .unshift({ id, value, isGoogleTranslate });
+    },
 
-        const selectedWord: WordInfo | undefined = userLanguageWords
-            .find(userWordInfo => userWordInfo.word == createdWord.word);
 
-        if(selectedWord)
-        {
-            selectedWord.meanings.unshift(meaning);
-        }
-        else
-        {
-            const { id, word, level } = createdWord;
-            userLanguageWords.unshift({
+    [MutationType.AddNewWordMeaning]({ user }, { createdWord, meaning }) {
+        const { id, word, level } = createdWord;
+        user.data
+            .languages[createdWord.from_language]!
+            .words
+            .unshift({
                 id,
                 word,
                 level,
                 meanings: [meaning],
             });
-        }
     },
 
     [MutationType.SetUser]({ user }, userData) {

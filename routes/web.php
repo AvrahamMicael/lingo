@@ -44,9 +44,11 @@ Route::group([
         
         Route::group([
             'controller' => MeaningController::class,
+            'prefix' => 'meaning',
         ], function() {
-            Route::get('/meanings/{from_language}/{to_language}/{word}', 'wordMeanings')->name('word.meanings');
-            Route::patch('/meaning/{id}', 'update')->name('meaning.update');
+            Route::get('/{from_language}/{to_language}/{word}', 'wordMeanings')->name('word.meanings');
+            Route::patch('/{id}', 'update')->name('meaning.update');
+            Route::post('/', 'addOtherToWord')->name('meaning.add');
         });
 
         Route::resource('word', WordController::class);

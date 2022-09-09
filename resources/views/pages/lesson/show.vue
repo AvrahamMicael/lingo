@@ -45,6 +45,7 @@ const replaceWordsWithSpan = (): void => {
 
 
 const checkedWord = ref<string>('');
+const checkedWordInfo = computed<WordInfo | null>(() => getters.userLanguages[props.lesson.language]!.words.find(wordInfo => wordInfo.word == checkedWord.value) ?? null);
 const checkedWordMeanings = ref<Meaning[]>([]);
 const checkedWordSavedMeanings = computed<MeaningWithId[]>(() => getters.userLanguages[props.lesson.language]!.words.find(wordInfo => wordInfo.word == checkedWord.value)?.meanings ?? []);
 
@@ -96,20 +97,33 @@ const storeWordPayloadWithoutMeaning = computed<Omit<StoreWordPayload, 'meaning'
 
 const selectAddMeaning = (meaningIndex: number): void => {
     const meaning: Meaning = checkedWordMeanings.value.splice(meaningIndex, 1).at(0)!;
-    dispatch(ActionType.SelectAddMeaning, {
-        meaning,
-        ...storeWordPayloadWithoutMeaning.value,
-    })
-        .then(( { data } ) => {
-            changeWordLevel(data.word, data.level);
+
+    if(checkedWordInfo.value?.id)
+    {
+        dispatch(ActionType.SelectAddOtherMeaningToWord, {
+            id_word: checkedWordInfo.value.id,
+            meaning,
+            to_language: props.lesson.language,
+            word: checkedWord.value,
         });
-    toggleWordPopup();
+    }
+    else
+    {
+        dispatch(ActionType.SelectAddMeaningToNewWord, {
+            meaning,
+            ...storeWordPayloadWithoutMeaning.value,
+        })
+            .then(( { data } ) => {
+                changeWordLevel(data.word, data.level);
+            });
+        toggleWordPopup();
+    }
 };
 
 
 
 const createMeaning = (newMeaning: string): void => {
-    dispatch(ActionType.SelectAddMeaning, {
+    dispatch(ActionType.SelectAddMeaningToNewWord, {
         meaning: {
             value: newMeaning,
             isGoogleTranslate: false,
@@ -140,11 +154,11 @@ watch(() => getters.isUserLoaded, replaceWordsWithSpanIfUserLoaded);
 
 onBeforeMount(() => {
     replaceWordsWithSpanIfUserLoaded();
-    document.body.style.overflowY = 'hidden';
+    document.body.style.overflow = 'hidden';
 });
 
 onUnmounted(() => {
-    document.body.style.overflowY = 'auto';
+    document.body.style.overflow = 'auto';
 });
 </script>
 

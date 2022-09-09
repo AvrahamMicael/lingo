@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddOtherMeaningToWordRequest;
 use App\Http\Requests\UpdateMeaningRequest;
 use App\Models\Language;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class MeaningController extends Controller
 {
+    public function addOtherToWord(AddOtherMeaningToWordRequest $req)
+    {
+        $data = $req->only('id_word', 'to_language');
+        $data['value'] = $req->meaning['value'];
+        $data['isGoogleTranslate'] = $req->meaning['isGoogleTranslate'];
+        $meaning = auth()->user()->meanings()->create($data);
+        return response($meaning, 201);
+    }
+
     public function wordMeanings(string $from_language, string $to_language, string $word)
     {
         Language::abort_if_not_all_found($from_language, $to_language);
