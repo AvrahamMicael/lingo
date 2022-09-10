@@ -44,4 +44,10 @@ class MeaningController extends Controller
         
         return response('');
     }
+
+    public function delete(int $id_meaning)
+    {
+        auth()->user()->meanings()->where('meanings.id', $id_meaning)->delete();
+        return response('', 204);
+    }
 }

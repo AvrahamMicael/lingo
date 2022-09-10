@@ -5,6 +5,7 @@ import { MutationTree } from 'vuex';
 export enum MutationType {
     AddWordOtherMeaning = 'addWordOtherMeaning',
     AddNewWordMeaning = 'addNewWordMeaning',
+    DeleteMeaning = 'deleteMeaning',
     SetUser = 'setUser',
     CreateUserLangIfDoesntExist = 'createUserLangIfDoesntExist',
     SetUserLoaded = 'setUserLoaded',
@@ -16,6 +17,7 @@ export enum MutationType {
 export type Mutations = {
     [MutationType.AddWordOtherMeaning](state: State, payload: SelectAddOtherMeaningToWordResponse): void,
     [MutationType.AddNewWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
+    [MutationType.DeleteMeaning](state: State, payload: { id_meaning: number, language: LanguageAbbrev }): void,
     [MutationType.SetUser](state: State, userData: UserData): void,
     [MutationType.CreateUserLangIfDoesntExist](state: State, language: LanguageAbbrev): void,
     [MutationType.SetUserLoaded](state: State): void,
@@ -47,6 +49,21 @@ export const mutations: MutationTree<State> & Mutations = {
                 meanings: [meaning],
             });
     },
+
+
+    [MutationType.DeleteMeaning]({ user }, { id_meaning, language }) {
+        user.data
+            .languages[language]!
+            .words
+            .find(wordInfo => wordInfo.meanings.some(meaning => meaning.id == id_meaning))!
+            .meanings
+            .every((meaning, index, meanings) => {
+                const shouldSkip: boolean = meaning.id != id_meaning;
+                if(!shouldSkip) meanings.splice(index, 1);
+                return shouldSkip;
+            });
+    },
+
 
     [MutationType.SetUser]({ user }, userData) {
         user.data = userData;

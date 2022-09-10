@@ -105,3 +105,31 @@ p.lesson-body
 {
     background-color: #AAA;
 }
+
+.btn-delete-meaning
+{
+    padding: 2px 4px !important;
+}
+
+.slide-opacity-enter-active
+{
+    animation: slide-opacity .3s ;
+}
+
+.slide-opacity-leave-active
+{
+    animation: slide-opacity .3s reverse;
+}
+
+@keyframes slide-opacity
+{
+    from
+    {
+        opacity: 0;
+        translate: 0;
+    }
+    to
+    {
+        opacity: 1;
+    }
+}

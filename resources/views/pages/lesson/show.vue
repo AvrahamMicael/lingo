@@ -145,17 +145,22 @@ const editMeaning = ({ newMeaning, idMeaning }: EditMeaningEmitPayload): void =>
     });
 };
 
+const deleteMeaning = (id_meaning: number): void => {
+    dispatch(ActionType.DeleteMeaning, { id_meaning, language: props.lesson.language });
+};
+
 
 const speech = (): void => {
-    if ('speechSynthesis' in window)
+    if (!('speechSynthesis' in window))
     {
-        if(props.lesson.language == 'la') alert('Latin is not available to speech!');
-        const msg = new SpeechSynthesisUtterance();
-        msg.lang = props.lesson.language;
-        msg.text = checkedWord.value;
-        window.speechSynthesis.speak(msg);
+        alert("Sorry, your browser doesn't support text to speech!");
+        return;
     }
-    else alert("Sorry, your browser doesn't support text to speech!");
+    if(props.lesson.language == 'la') alert('Latin is not available to speech!');
+    const msg = new SpeechSynthesisUtterance();
+    msg.lang = props.lesson.language;
+    msg.text = checkedWord.value;
+    window.speechSynthesis.speak(msg);
 };
 
 
@@ -203,6 +208,7 @@ onUnmounted(() => {
                     :meanings="checkedWordSavedMeanings"
                     @create-meaning="createMeaning"
                     @edit-meaning="editMeaning"
+                    @delete-meaning="deleteMeaning"
                 />
 
                 <h5>Meanings</h5>

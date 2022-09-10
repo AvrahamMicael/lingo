@@ -1,5 +1,5 @@
 import { ActionContext, ActionTree } from "vuex";
-import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord, MeaningWithId, UpdateMeaningPayload, SelectAddOtherMeaningToWordPayload, SelectAddOtherMeaningToWordResponse } from "../types";
+import { StoreWordPayload, TranslatePayload, UserData, Meaning, CreatedWord, MeaningWithId, UpdateMeaningPayload, SelectAddOtherMeaningToWordPayload, SelectAddOtherMeaningToWordResponse, LanguageAbbrev } from "../types";
 import { Mutations, MutationType } from "./mutations";
 import { State } from "./state";
 import { AxiosResponse } from 'axios';
@@ -7,6 +7,7 @@ import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
 
 export enum ActionType {
+    DeleteMeaning = 'deleteMeaning',
     CheckWord = 'checkWord',
     SelectAddMeaningToNewWord = 'selectAddMeaningToNewWord',
     SelectAddOtherMeaningToWord = 'selectAddOtherMeaningToWord',
@@ -22,6 +23,7 @@ type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
 };
 
 export type Actions = {
+    [ActionType.DeleteMeaning](context: ActionAugments, payload: { id_meaning: number, language: LanguageAbbrev }): Promise<AxiosResponse<''>>,
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaningToNewWord](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
     [ActionType.SetUser](context: ActionAugments): Promise<AxiosResponse<UserData>>,
@@ -32,6 +34,18 @@ export type Actions = {
 const route = useRoute();
 
 export const actions: ActionTree<State, State> & Actions = {
+
+    async [ActionType.DeleteMeaning]({ commit }, { id_meaning, language }) {
+        return await axiosClient.delete<''>(route('meaning.delete', { id: id_meaning }))
+            .then(res => {
+                commit(MutationType.DeleteMeaning, { id_meaning, language });
+                return res;
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+    },
     
     async [ActionType.CheckWord](_, translatePayload) {
         return await axiosClient.get<{ meanings: Meaning[] }>(route('word.meanings', translatePayload));

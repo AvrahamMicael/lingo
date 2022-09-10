@@ -49,6 +49,7 @@ Route::group([
             Route::get('/{from_language}/{to_language}/{word}', 'wordMeanings')->name('word.meanings');
             Route::patch('/{id}', 'update')->name('meaning.update');
             Route::post('/', 'addOtherToWord')->name('meaning.add');
+            Route::delete('/{id}', 'delete')->name('meaning.delete');
         });
 
         Route::resource('word', WordController::class);
