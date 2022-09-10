@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import LabelInput from '@/views/components/label-input.vue';
 import { useForm } from '@inertiajs/inertia-vue3';
-import { LoginForm } from '../../../scripts/types/index';
+import { LoginForm } from '@/scripts/types/index';
 import FormError from '@/views/components/form-error.vue';
-import useRoute from '../../../scripts/composables/useRoute';
+import useRoute from '@/scripts/composables/useRoute';
 import SubmitBlockButton from '@/views/components/submit-block-button.vue';
 
 const route = useRoute();

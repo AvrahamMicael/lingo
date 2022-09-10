@@ -3,6 +3,7 @@ import { State } from './state';
 import { MutationTree } from 'vuex';
 
 export enum MutationType {
+    LogUserOut = 'LogUserOut',
     AddWordOtherMeaning = 'addWordOtherMeaning',
     AddNewWordMeaning = 'addNewWordMeaning',
     DeleteMeaning = 'deleteMeaning',
@@ -15,6 +16,7 @@ export enum MutationType {
 // meaning with all, word 
 
 export type Mutations = {
+    [MutationType.LogUserOut](state: State): void,
     [MutationType.AddWordOtherMeaning](state: State, payload: SelectAddOtherMeaningToWordResponse): void,
     [MutationType.AddNewWordMeaning](state: State, { createdWord, meaning }: CreatedWordWithMeaning): void,
     [MutationType.DeleteMeaning](state: State, payload: { id_meaning: number, language: LanguageAbbrev }): void,
@@ -25,6 +27,14 @@ export type Mutations = {
 };
 
 export const mutations: MutationTree<State> & Mutations = {
+
+
+    [MutationType.LogUserOut]({ user }) {
+        user.data.name = '';
+        delete user.data.translation_language;
+        user.data.languages = {};
+        user.loaded = false;
+    },
 
 
     [MutationType.AddWordOtherMeaning]({ user }, { id, id_word, to_language, value, isGoogleTranslate }) {

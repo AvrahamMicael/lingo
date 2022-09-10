@@ -2,15 +2,27 @@
 import useRoute from '@/scripts/composables/useRoute';
 import { useStore } from '@/scripts/store';
 import { Link } from '@/scripts/types';
+import { Inertia, Method } from '@inertiajs/inertia';
+import { MutationType } from '@/scripts/store/mutations';
 
 const route = useRoute();
 
-const { getters } = useStore();
+const { getters, commit } = useStore();
 
 const dropdownLinks: Link[] = [
     // { name: 'Profile', href: route('user.index') },
     { name: 'Log out', href: route('logout') },
 ];
+
+const redirect = (link: Link): void => {
+    const method: Method = link.name == 'Log out'
+        ? Method.POST
+        : Method.GET; 
+    Inertia.visit(link.href, {
+        method,
+        onSuccess: () => commit(MutationType.LogUserOut),
+    });
+};
 </script>
 
 <template>
@@ -30,14 +42,14 @@ const dropdownLinks: Link[] = [
                             {{ getters.userName }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="triggerId">
-                            <InertiaLink
+                            <button
                                 v-for="link in dropdownLinks"
                                 :key="link.href"
-                                :href="link.href"
+                                @click.prevent="redirect(link)"
                                 class="dropdown-item"
                             >
                                 {{ link.name }}
-                            </InertiaLink>
+                            </button>
                         </div>
                     </div>
                     
