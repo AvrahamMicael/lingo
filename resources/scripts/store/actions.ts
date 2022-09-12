@@ -7,6 +7,7 @@ import axiosClient from "../axios";
 import useRoute from '../composables/useRoute';
 
 export enum ActionType {
+    ChangeWordLevel = 'changeWordLevel',
     DeleteMeaning = 'deleteMeaning',
     CheckWord = 'checkWord',
     SelectAddMeaningToNewWord = 'selectAddMeaningToNewWord',
@@ -23,6 +24,7 @@ type ActionAugments = Omit<ActionContext<State, State>, 'commit'> & {
 };
 
 export type Actions = {
+    [ActionType.ChangeWordLevel](context: ActionAugments, payload: { id_word: number, level: number }): Promise<AxiosResponse<''>>,
     [ActionType.DeleteMeaning](context: ActionAugments, payload: { id_meaning: number, language: LanguageAbbrev }): Promise<AxiosResponse<''>>,
     [ActionType.CheckWord](context: ActionAugments, translatePayload: TranslatePayload): Promise<AxiosResponse<{ meanings: Meaning[] }>>,
     [ActionType.SelectAddMeaningToNewWord](context: ActionAugments, storeWordPayload: StoreWordPayload): Promise<AxiosResponse<CreatedWord>>,
@@ -34,6 +36,18 @@ export type Actions = {
 const route = useRoute();
 
 export const actions: ActionTree<State, State> & Actions = {
+
+    async [ActionType.ChangeWordLevel]({ commit }, { id_word, level }) {
+        return axiosClient.patch<''>(route('word.update', { id: id_word }), { level })
+            .then(res => {
+                commit(MutationType.UpdateWordLevel, { id_word, level });
+                return res;
+            })
+            .catch(error => {
+                console.log(error);
+                return error;
+            });
+    },
 
     async [ActionType.DeleteMeaning]({ commit }, { id_meaning, language }) {
         return await axiosClient.delete<''>(route('meaning.delete', { id: id_meaning }))

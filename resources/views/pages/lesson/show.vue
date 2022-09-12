@@ -89,6 +89,16 @@ const toggleWordPopup = (): void => {
 };
 
 
+const changeWordLevelOnButtons = (level: number): void => {
+    dispatch(ActionType.ChangeWordLevel, {
+        id_word: checkedWordInfo.value!.id,
+        level,
+    });
+    changeWordLevel(checkedWord.value, level);
+    toggleWordPopup();
+};
+
+
 const storeWordPayloadWithoutMeaning = computed<Omit<StoreWordPayload, 'meaning'>>(() => ({
     word: checkedWord.value,
     from_language: props.lesson.language,
@@ -227,6 +237,27 @@ onUnmounted(() => {
                     <h5>Notes</h5>
                     <textarea rows="1" class="form-control"></textarea>
                 </label>
+
+                <div v-if="checkedWordSavedMeanings.length" class="d-flex justify-content-evenly mt-2">
+                    <button
+                        type="button"
+                        @click="changeWordLevelOnButtons(-1)"
+                        class="btn btn-outline-secondary"
+                        :class="{ active: checkedWordInfo!.level == -1 }"
+                    >
+                        <i class="fa-solid fa-trash fa-sm"/>
+                    </button>
+                    <button
+                        v-for="count in 5"
+                        :key="count"
+                        @click="changeWordLevelOnButtons(count)"
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        :class="{ active: checkedWordInfo!.level == count }"
+                    >
+                        {{ count }}
+                    </button>
+                </div>
             </CardBox>
         </WordPopup>
     </CardBox>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWordRequest;
+use App\Http\Requests\UpdateWordLevelRequest;
 
 class WordController extends Controller
 {
@@ -27,5 +28,11 @@ class WordController extends Controller
         ];
 
         return response($createdWord, 201);
+    }
+
+    public function update(int $id_word, UpdateWordLevelRequest $req)
+    {
+        auth()->user()->words()->where('id', $id_word)->update($req->only('level'));
+        return response('');
     }
 }
