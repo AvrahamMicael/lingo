@@ -116,6 +116,7 @@ const selectAddMeaning = (meaningIndex: number): void => {
             to_language: props.lesson.language,
             word: checkedWord.value,
         });
+        if(checkedWordInfo.value.level == -1) changeWordLevelOnButtons(1);
     }
     else
     {
@@ -156,7 +157,14 @@ const editMeaning = ({ newMeaning, idMeaning }: EditMeaningEmitPayload): void =>
 };
 
 const deleteMeaning = (id_meaning: number): void => {
-    dispatch(ActionType.DeleteMeaning, { id_meaning, language: props.lesson.language });
+    dispatch(ActionType.DeleteMeaning, { id_meaning, language: props.lesson.language })
+        .then(() => {
+            if(!checkedWordSavedMeanings.value.length)
+            {
+                changeWordLevel(checkedWord.value, -1);
+                toggleWordPopup();
+            }
+        });
 };
 
 

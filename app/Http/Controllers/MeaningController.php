@@ -47,7 +47,13 @@ class MeaningController extends Controller
 
     public function delete(int $id_meaning)
     {
-        auth()->user()->meanings()->where('meanings.id', $id_meaning)->delete();
+        $meaning = auth()->user()->meanings()->find($id_meaning);
+        $id_word = $meaning->id_word;
+        $meaning->delete();
+
+        $wordMeaningsCount = auth()->user()->meanings()->where('id_word', $id_word)->count();
+        if($wordMeaningsCount == 0) auth()->user()->words()->where('id', $id_meaning)->update(['level' => -1]);
+
         return response('', 204);
     }
 }

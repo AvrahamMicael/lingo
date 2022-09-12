@@ -33,6 +33,7 @@ class WordController extends Controller
     public function update(int $id_word, UpdateWordLevelRequest $req)
     {
         auth()->user()->words()->where('id', $id_word)->update($req->only('level'));
+        if($req->level == -1) auth()->user()->meanings()->where('id_word', $id_word)->delete();
         return response('');
     }
 }

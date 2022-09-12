@@ -31,11 +31,13 @@ export type Mutations = {
 export const mutations: MutationTree<State> & Mutations = {
 
     [MutationType.UpdateWordLevel]({ user }, { id_word, level }) {
-        Object.values(user.data.languages)
+        const wordInfo = Object.values(user.data.languages)
             .find(languageInfo => languageInfo.words.some(wordInfo => wordInfo.id == id_word))!
             .words
-            .find(wordInfo => wordInfo.id == id_word)!
-            .level = level;
+            .find(wordInfo => wordInfo.id == id_word)!;
+
+        wordInfo.level = level;
+        if(level == -1) wordInfo.meanings = [];
     },
 
 
@@ -72,16 +74,18 @@ export const mutations: MutationTree<State> & Mutations = {
 
 
     [MutationType.DeleteMeaning]({ user }, { id_meaning, language }) {
-        user.data
+        const wordInfo: WordInfo = user.data
             .languages[language]!
             .words
-            .find(wordInfo => wordInfo.meanings.some(meaning => meaning.id == id_meaning))!
-            .meanings
-            .every((meaning, index, meanings) => {
+            .find(wordInfo => wordInfo.meanings.some(meaning => meaning.id == id_meaning))!;
+
+        wordInfo.meanings.every((meaning, index, meanings) => {
                 const shouldSkip: boolean = meaning.id != id_meaning;
                 if(!shouldSkip) meanings.splice(index, 1);
                 return shouldSkip;
             });
+
+        if(wordInfo.meanings.length == 0) wordInfo.level = -1;
     },
 
 
