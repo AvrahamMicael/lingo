@@ -11,6 +11,7 @@ class HomeController extends Controller
     {
         $lastOpenedLessons = LastOpenedLesson::getUserLessons();
         $userImportedLessons = Lesson::getUserImportedLessons();
-        return inertia('home', compact('lastOpenedLessons', 'userImportedLessons'));
+        $otherUsersLessons = Lesson::getOtherUsersLessons();
+        return inertia('home', compact('lastOpenedLessons', 'userImportedLessons', 'otherUsersLessons'));
     }
 }

@@ -21,11 +21,21 @@ class Lesson extends Model
         'image',
     ];
 
+    public static function getOtherUsersLessons(): Collection
+    {
+        return DB::table('lessons as l')
+        ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
+        ->join('users as u', 'u.id', '=', 'l.id_user')
+        ->where('u.id', '!=', auth()->id())
+        ->orderBy('created_at', 'desc')
+        ->get();
+    }
+
     public static function getUserImportedLessons(): Collection
     {
         return DB::table('lessons as l')
             ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
-            ->rightJoin('users as u', 'u.id', '=', 'l.id_user')
+            ->join('users as u', 'u.id', '=', 'l.id_user')
             ->where('u.id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get();
