@@ -22,7 +22,7 @@ class LastOpenedLesson extends Model
     public static function getUserLessons(): Collection
     {
         return DB::table('last_opened_lessons as lol')
-            ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
+            ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'l.language', 'u.name as username')
             ->join('users as u', 'u.id', '=', 'lol.id_user')
             ->leftJoin('lessons as l', 'l.id', '=', 'lol.id_lesson')
             ->where('u.id', auth()->id())

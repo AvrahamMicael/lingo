@@ -31,6 +31,7 @@ export interface LessonDisplay {
     created_at: string,
     username: string,
     title: string,
+    language: LanguageAbbrev,
 };
 
 export interface TranslatePayload {

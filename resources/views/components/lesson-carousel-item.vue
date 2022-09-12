@@ -26,7 +26,15 @@ const goToLesson = (): void => {
         :img-height="154"
         @click="goToLesson"
         class="w-200px carousel__item"
+        body-class="position-relative"
     >
+        <img
+            :src="`/assets/img/flags/${lesson.language}.svg`"
+            :alt="`${lesson.language} language`"
+            width="40"
+            height="40"
+            class="rounded-circle position-absolute top-0 bottom-0 start-0 my-auto ms-1 opacity-50"
+        >
         <h5 class="card-title text-break mb-0 text-truncate">{{ lesson.title }}</h5>
         <small v-if="showImportedBy">Imported by <em>{{ lesson.username }}</em></small>
     </CardBox>

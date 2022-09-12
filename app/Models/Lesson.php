@@ -24,7 +24,7 @@ class Lesson extends Model
     public static function getOtherUsersLessons(): Collection
     {
         return DB::table('lessons as l')
-        ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
+        ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'l.language', 'u.name as username')
         ->join('users as u', 'u.id', '=', 'l.id_user')
         ->where('u.id', '!=', auth()->id())
         ->orderBy('created_at', 'desc')
@@ -34,7 +34,7 @@ class Lesson extends Model
     public static function getUserImportedLessons(): Collection
     {
         return DB::table('lessons as l')
-            ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'u.name as username')
+            ->select('l.id', 'l.title', 'l.image', 'l.created_at', 'l.language', 'u.name as username')
             ->join('users as u', 'u.id', '=', 'l.id_user')
             ->where('u.id', auth()->id())
             ->orderBy('created_at', 'desc')
